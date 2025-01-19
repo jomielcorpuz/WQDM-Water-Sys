@@ -7,9 +7,11 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
+use Maatwebsite\Excel\Concerns\WithSkipDuplicates;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class SitesImport implements ToModel, WithHeadingRow, WithUpserts, WithValidation
+class SitesImport implements ToModel, WithHeadingRow, WithUpserts, WithValidation, WithSkipDuplicates, SkipsEmptyRows
 {
     /**
     * @param array $row
@@ -36,6 +38,8 @@ class SitesImport implements ToModel, WithHeadingRow, WithUpserts, WithValidatio
             'latitude' => $row['latitude'],
             'longitude' => $row['longitude'],
         ]);
+
+
     }
     public function uniqueBy()
     {

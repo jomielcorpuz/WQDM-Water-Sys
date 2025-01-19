@@ -69,7 +69,7 @@ class DataController extends Controller
             Excel::import(new SitesImport, $file);
 
             return to_route('sitesdata.index')
-        ->with('success', 'Data was successfuly uploaded');;
+        ->with('success', 'Data uploaded successfuly');;
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 
@@ -80,7 +80,7 @@ class DataController extends Controller
             ]);
         } catch (\Exception $e) {
             return to_route('sitesdata.index')
-        ->with('success', 'Data was successfuly uploaded');;
+        ->with('success', 'Data uploaded successfuly');;
         }
     }
 
