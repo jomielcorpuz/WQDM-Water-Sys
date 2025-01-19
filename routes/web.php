@@ -29,28 +29,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Resource routes for DataController
     Route::resource('sitesdata', DataController::class);
 
-    //Route::delete('/sitesdata/{sites}', [DataController::class, 'destroy'])->name('sitesdata.destroy');
 
-
-    // Route::get('/spatialviews/viewspatial', [SpatialviewsController::class, 'spatialIndex'])
-    // ->name('spatialviews.viewspatial');
     Route::resource('spatialviews', SpatialviewsController::class);
 
-    //Route::get('/spatialviews/viewspatial', [SpatialviewsController::class, 'spatialIndex'])->name('spatial.page');
-
-    // Batch upload route within resource
-    // Route::post('/sitesdata/batchupload', [BatchuploadController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
-
-    // Route::get('/spatialviews/viewspatial', [SpatialController::class, 'spatialIndex'])->name('sitesdata.viewspatial');
-    // Route::resource('/sitesdata/viewspatial', [SpatialController::class, 'spatialIndex'])->name('sitesdata.viewspatial');
 
 
 });
 
 
-Route::get('/sitesdata/batchupload', [BatchuploadController::class, 'showBatchUploadForm'])->name('sitesdata.batchupload');
-Route::post('/sitesdata/batchupload', [BatchuploadController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
-
+Route::get('/batchupload', [Datacontroller::class, 'showBatchUploadForm'])->name('sitesdata.batchupload');
+Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
 
 
 Route::middleware('auth')->group(function () {

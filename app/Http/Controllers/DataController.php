@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Imports\SitesImport;
+use Maatwebsite\Excel\Facades\Excel;
+
+
 
 class DataController extends Controller
 {
@@ -45,6 +52,37 @@ class DataController extends Controller
         ]);
     }
 
+    public function showBatchUploadForm()
+    {
+        return Inertia::render('Sitesdata/BatchUpload');
+    }
+
+    public function handleBatchUpload(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+
+        try {
+            Excel::import(new SitesImport, $file);
+
+            return to_route('sitesdata.index')
+        ->with('success', 'Data was successfuly uploaded');;
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Some rows failed to import.',
+                'errors' => $failures,
+            ]);
+        } catch (\Exception $e) {
+            return to_route('sitesdata.index')
+        ->with('success', 'Data was successfuly uploaded');;
+        }
+    }
 
 
     /**
