@@ -32,13 +32,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('spatialviews', SpatialviewsController::class);
 
+    Route::get('/batchupload', [Datacontroller::class, 'showBatchUploadForm'])->name('sitesdata.batchupload');
+    Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
+    Route::get('/sitesdata/index', [DataController::class, 'sitesExport'])
+    ->name('sitesdata.export');
+
 
 
 });
 
-
-Route::get('/batchupload', [Datacontroller::class, 'showBatchUploadForm'])->name('sitesdata.batchupload');
-Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
 
 
 Route::middleware('auth')->group(function () {
@@ -56,5 +58,10 @@ Route::get('/spatial', [SitesController::class, 'spatialPage'])->name('spatial.p
 
 Route::get('/api/spatial', [SitesController::class, 'index'])->name('api.spatial');
 
+Route::get('/test-download', function() {
+    // Using public_path() helper to get the correct path
+    $path = public_path('test.txt');
+    return response()->download($path);
+});
 
 require __DIR__.'/auth.php';

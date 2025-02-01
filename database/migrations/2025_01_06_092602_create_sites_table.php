@@ -23,7 +23,7 @@ return new class extends Migration
             $table->float('sulfate');
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
-            $table->string('status')->default('non-potable');
+            $table->string('status')->default('Non-potable');
             $table->timestamps();
         });
     }

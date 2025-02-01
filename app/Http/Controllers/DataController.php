@@ -14,7 +14,9 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Imports\SitesImport;
+use App\Exports\ExportSites;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
 
 
 
@@ -41,12 +43,13 @@ class DataController extends Controller
             $query->where("status", request("status"));
         }
 
-
+        $sites_data_all = $query->orderBy($sortField, $sortDirection)->get();
         $sites_data = $query->orderBy($sortField,$sortDirection)
         ->paginate(10)->onEachSide(1);
 
         return inertia("Sitesdata/Index",[
             "sites_data" => DataResource::collection($sites_data),
+            "sites_data_all" => DataResource::collection($sites_data_all),
             'queryParams' =>request()->query() ?: null,
             'success' => session('success'),
         ]);
@@ -84,6 +87,47 @@ class DataController extends Controller
         }
     }
 
+    public function sitesExport(Request $request)
+    {
+        try {
+            // Get all sites with explicit column selection
+            $sites = Sites::select(
+                'name',
+                'ph_level',
+                'turbidity',
+                'total_dissolved_solids',
+                'total_hardness',
+                'salinity',
+                'nitrate',
+                'sulfate',
+                'latitude',
+                'longitude',
+                'status'
+            )->get();
+
+            // For debugging - log the raw data
+            Log::info('Raw sites data:', ['data' => $sites->toArray()]);
+
+            $transformedData = DataResource::collection($sites);
+
+            // For debugging - log the transformed data
+            Log::info('Transformed data:', ['data' => $transformedData->toArray($request)]);
+
+            return Excel::download(
+                new ExportSites($transformedData),
+                'water_quality_sites_' . date('Y-m-d') . '.csv',
+                \Maatwebsite\Excel\Excel::CSV,
+                [
+                    'Content-Type' => 'text/csv',
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::error('Export failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Export failed: ' . $e->getMessage()], 500);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.

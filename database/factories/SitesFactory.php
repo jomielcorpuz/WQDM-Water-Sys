@@ -27,7 +27,7 @@ class SitesFactory extends Factory
             'sulfate' => $this->faker->randomFloat(2, 0, 50), // Nullable float
             'latitude' => $this->faker->latitude, // Random latitude
             'longitude' => $this->faker->longitude, // Random longitude
-            'status' => $this->faker->randomElement(['potable', 'non-potable']),
+            'status' => $this->faker->randomElement(['Potable', 'Non-potable']),
     ];
 
     }

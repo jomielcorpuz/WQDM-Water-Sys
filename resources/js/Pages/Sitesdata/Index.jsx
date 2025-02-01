@@ -6,13 +6,17 @@ import Pagination from "@/Components/Pagination";
 import SelectInput from "@/Components/SelectInput";
 import Swal from 'sweetalert2';
 import { useState } from "react";
+import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constans";
 
-export default function Index({auth, sites_data, queryParams = null, success }){
-  const [selectedSite, setSelectedSite] = useState(null);
+export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
+  const [selectedSites, setSelectedSites] = useState([]);
 
   queryParams = queryParams || {};
   console.log(sites_data);
 
+
+  const totalPotable = sites_data_all.data.filter(site => site.status === 'potable').length;
+  const totalNonPotable = sites_data_all.data.filter(site => site.status === 'non-potable').length;
 
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -46,14 +50,13 @@ export default function Index({auth, sites_data, queryParams = null, success }){
 
   const handleEditClick = (sites) => {
     if (!sites) {
-        console.error("Site is null or undefined");
-        return;
+      console.error("Site is null or undefined");
+      return;
     }
-    setSelectedSite(sites);
+    setSelectedSites([sites.id]); // For single site, update directly
     console.log(`Editing site: ${sites.name} (ID: ${sites.id})`);
-    router.get(route("sitesdata.edit",{sitesdatum: sites.id}));
-};
-
+    router.get(route("sitesdata.edit", { sitesdatum: sites.id }));
+  };
 
   const deleteSite = (sites) => {
     console.log(sites);
@@ -70,43 +73,73 @@ export default function Index({auth, sites_data, queryParams = null, success }){
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        router.delete(route("sitesdata.destroy", {sitesdatum: sites.id}));
+        router.delete(route("sitesdata.destroy", { sitesdatum: sites.id }));
       }
     });
   };
 
+  const toggleSelection = (id) => {
+    setSelectedSites((prevSelected) =>
+      prevSelected.includes(id) ? prevSelected.filter((sid) => sid !== id) : [...prevSelected, id]
+    );
+  };
+  const handleExport = async () => {
+    try {
+      const response = await fetch(route('sitesdata.export'), {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
 
-  return(
-    <AuthenticatedLayout
-    user={auth.user}
-    header={
-      <div className="flex justify-between items-center">
-      <h2 className=" font-semibold text-xl text-black">
-        Sites
-      </h2>
-        <div className="space-x-4">
-
-      <Link
-        href={route("sitesdata.create")}
-        className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
-      >
-        Add new
-      </Link>
-      <Link
-        href={route("sitesdata.batchupload")}
-        className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
-      >
-        Upload CSV
-      </Link>
-
-          </div>
-      </div>
+      if (response.ok) {
+        // Create a blob from the response
+        const blob = await response.blob();
+        // Create a link to download the file
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `water_quality_sites_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      } else {
+        console.error('Export failed:', response.statusText);
+        // Handle error appropriately
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      // Handle error appropriately
     }
-    >
-      <Head title="Dashboard" />
+  };
 
-      <div className="py-12">
-       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+  return (
+    <AuthenticatedLayout
+      user={auth.user}
+      header={
+        <div className="flex justify-between items-center">
+          <h2 className="font-semibold text-xl text-black">Sites</h2>
+          <div className="space-x-4">
+            <Link
+              href={route("sitesdata.create")}
+              className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
+            >
+              Add new
+            </Link>
+            <Link
+              href={route("sitesdata.batchupload")}
+              className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
+            >
+              Upload CSV
+            </Link>
+          </div>
+        </div>
+      }
+    >
+
+      <div className="py-10 w-full">
+        <div className="mx-auto sm:px-6 lg:px-8">
           {success && (
             <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4">
               {success}
@@ -118,6 +151,7 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                     <tr className="text-nowrap">
+
                       <TableHeading
                         name="id"
                         sort_field={queryParams.sort_field}
@@ -151,7 +185,7 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                       PH Level
+                        PH Level
                       </TableHeading>
 
                       <TableHeading
@@ -169,10 +203,9 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-
                         Turbidity
                       </TableHeading>
-                      <th className="px-3 py-3"> dissolve solids</th>
+                      <th className="px-3 py-3">dissolve solids</th>
                       <th className="px-3 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -180,7 +213,7 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                     <tr className="text-nowrap">
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3">
-                      <TextInput
+                        <TextInput
                           className="w-full"
                           defaultValue={queryParams.name}
                           placeholder="Site Name"
@@ -191,7 +224,7 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                         />
                       </th>
                       <th className="px-3 py-3">
-                      <SelectInput
+                        <SelectInput
                           className="w-full"
                           defaultValue={queryParams.status}
                           onChange={(e) =>
@@ -201,7 +234,6 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                           <option value="">Select</option>
                           <option value="potable">Potable</option>
                           <option value="non-potable">Non-Potable</option>
-
                         </SelectInput>
                       </th>
                       <th className="px-3 py-3"></th>
@@ -217,32 +249,23 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                         key={sites.id}
                       >
+
                         <td className="px-3 py-2">{sites.id}</td>
 
-                        <th className="px-3 py-2 text-black text-nowrap text-sm  hover:underline hover:text-blue-400">
+                        <th className="px-3 py-2 text-black text-nowrap text-sm hover:underline hover:text-blue-400">
                           <Link href={route("sitesdata.show", sites.id)}>
                             {sites.name}
                           </Link>
                         </th>
                         <td className="px-3 py-2">
-                        {sites.status}
+                          <span className={"px-2 py-1 rounded text-white " + WATER_STATUS_CLASS_MAP[sites.status]}>
+                            {WATER_STATUS_TEXT_MAP[sites.status]}
+                          </span>
                         </td>
-                        <td className="px-3 py-2">
-                        {sites.ph_level}
-                        </td>
-
-                         <td className="px-3 py-2">
-                        {sites.salinity}
-                        </td>
-
-                         <td className="px-3 py-2">
-                        {sites.turbidity.toFixed(1)} NTU
-                        </td>
-
-                         <td className="px-3 py-2">
-                        {sites.total_dissolved_solids}
-                        </td>
-
+                        <td className="px-3 py-2">{sites.ph_level}</td>
+                        <td className="px-3 py-2">{sites.salinity}</td>
+                        <td className="px-3 py-2">{sites.turbidity.toFixed(1)} NTU</td>
+                        <td className="px-3 py-2">{sites.total_dissolved_solids}</td>
 
                         <td className="px-3 py-2 text-nowrap">
                           <Link
@@ -254,7 +277,7 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                           </Link>
 
                           <button
-                            onClick={() => deleteSite(sites) }
+                            onClick={() => deleteSite(sites)}
                             className="font-medium text-red-600 text-red-500 hover:underline mx-1"
                           >
                             Delete
@@ -264,13 +287,33 @@ export default function Index({auth, sites_data, queryParams = null, success }){
                     ))}
                   </tbody>
                 </table>
-                </div>
-                <Pagination links={sites_data.meta.links} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+              </div>
+              <Pagination links={sites_data.meta.links} />
+              <hr className="my-4 border-t-2 border-gray-300" />
+              <div className="flex justify-between gap-3 items-center" >
+                <div className="max-w-7xl sm:px-6 lg:px-2">
+                  <p className="text-gray-600">
+                    <span><strong>Total Potable:</strong> </span>
+                    <span className="text-gray-800"> {totalPotable}</span>
+                  </p>
+                  <p className="text-gray-600">
+                    <strong>Total Non-Potable:</strong>
+                    <span className="text-gray-800"> {totalNonPotable}</span>
+                  </p>
 
+                </div>
+
+                <button
+                  onClick={handleExport}
+                  className="bg-gray-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-gray-600"
+                >
+                  Export Excel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </AuthenticatedLayout>
-  )
+  );
 }
