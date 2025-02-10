@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 
 
+Route::get('/welcome', fn () => Inertia::render('Welcome'))->name('welcome');
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard route

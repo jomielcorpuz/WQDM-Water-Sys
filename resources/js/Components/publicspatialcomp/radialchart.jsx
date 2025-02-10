@@ -1,7 +1,10 @@
 "use client";
 
-import { RadialBar, RadialBarChart, PolarRadiusAxis } from "recharts";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+ChartJS.register(ArcElement, Tooltip);
 
 const MAX_PH = 10;
 const currentPh = 2; // Example value, can be dynamic
@@ -12,37 +15,39 @@ const getColor = (ph) => {
   return "green";
 };
 
-const chartData = [{ name: "pH Level", value: (currentPh / MAX_PH) * 100 }];
+const data = {
+  labels: ["pH Level", "Remaining"],
+  datasets: [
+    {
+      data: [currentPh, MAX_PH - currentPh],
+      backgroundColor: [getColor(currentPh), "#e0e0e0"],
+      borderWidth: 0,
+      cutout: "70%",
+      circumference: 180,
+      rotation: 270,
+    },
+  ],
+};
 
 export function RadialChart() {
   return (
-    <Card className="flex flex-col items-center p-6">
-      <CardHeader className="items-center pb-4">
+    <Card className="flex-wrap justify-center items-center ">
+      <CardHeader className="justify-center  items-center">
         <CardTitle>pH Level</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-1 items-center">
-        <RadialBarChart
-          width={250}
-          height={250}
-          cx={125}
-          cy={125}
-          innerRadius={80}
-          outerRadius={120}
-          barSize={15}
-          data={chartData}
-          startAngle={180}
-          endAngle={180 - (180 * (currentPh / MAX_PH))}
-        >
-          <PolarRadiusAxis domain={[1, 100]} tick={false} axisLine={false} />
-          <RadialBar
-            dataKey="value"
-            fill={getColor(currentPh)}
-            background={{ fill: "#e0e0e0" }}
-          />
-          <text x={125} y={125} textAnchor="middle" className="fill-foreground text-2xl font-bold">
+      <CardContent className="flex justify-center items-center max-h-[250px] max-w-[350px]">
+        <div className="max-h-[250px] max-w-[350px] w-[150px]">
+
+          <Doughnut data={data} options={{ plugins: { tooltip: { enabled: false } } }} className="flex items-center" />
+          <div className="flex items-center justify-center text-2xl font-bold text-foreground">
             {currentPh}
-          </text>
-        </RadialBarChart>
+          </div>
+          <div className="flex justify-between">
+
+            <div className="text-sm font-bold text-muted-foreground">Min</div>
+            <div className="text-sm font-bold text-muted-foreground">Max</div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
