@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Head } from "@inertiajs/react";
 import SelectInput from "@/Components/SelectInput";
 import GuestLayout from "@/Layouts/FrontLayout";
+import { RadialChart } from "@/Components/publicspatialcomp/radialchart";
 
 
 export default function Spatial() {
@@ -130,7 +131,7 @@ export default function Spatial() {
       <GuestLayout>
         <div className="py-10">
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {/* Map section */}
               <div className="bg-white border rounded overflow-hidden shadow-sm sm:rounded-lg">
                 <div className="p-4 bg-white dark:bg-gray-800">
@@ -188,6 +189,7 @@ export default function Spatial() {
                   </div>
                 </div>
               </div>
+              <RadialChart />
             </div>
           </div>
         </div>
