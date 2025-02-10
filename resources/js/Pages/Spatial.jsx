@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import Footer from "@/Components/Footer";
 
 
 export default function Spatial() {
@@ -266,7 +267,7 @@ export default function Spatial() {
             </Table>
           </Card>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="px-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
 
 
           <div className="max-h-[350px]">
@@ -275,6 +276,7 @@ export default function Spatial() {
 
           </div>
         </div>
+        <Footer />
       </FrontLayout>
     </div>
   );
