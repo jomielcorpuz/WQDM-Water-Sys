@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 ChartJS.register(ArcElement, Tooltip);
 
 const MAX_PH = 10;
-const currentPh = 2; // Example value, can be dynamic
 
 const getColor = (ph) => {
   if (ph < 4) return "red";
@@ -15,21 +14,22 @@ const getColor = (ph) => {
   return "green";
 };
 
-const data = {
-  labels: ["pH Level", "Remaining"],
-  datasets: [
-    {
-      data: [currentPh, MAX_PH - currentPh],
-      backgroundColor: [getColor(currentPh), "#e0e0e0"],
-      borderWidth: 0,
-      cutout: "70%",
-      circumference: 180,
-      rotation: 270,
-    },
-  ],
-};
 
-export function RadialChart() {
+export function RadialChart({ currentPh = 0 }) {
+  const data = {
+    labels: ["pH Level", "Remaining"],
+    datasets: [
+      {
+        data: [currentPh, MAX_PH - currentPh],
+        backgroundColor: [getColor(currentPh), "#e0e0e0"],
+        borderWidth: 0,
+        cutout: "70%",
+        circumference: 180,
+        rotation: 270,
+      },
+    ],
+  };
+
   return (
     <Card className="flex-wrap justify-center items-center ">
       <CardHeader className="justify-center  items-center">

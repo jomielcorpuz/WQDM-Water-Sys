@@ -205,7 +205,6 @@ export default function Spatial() {
                   </DropdownMenu>
                 </div>
               </div>
-              <hr className="my-2 border-t-2 border-gray-300" />
               {loading ? (
                 <p>Loading...</p>
               ) : (
@@ -267,16 +266,13 @@ export default function Spatial() {
             </Table>
           </Card>
         </div>
-        <div className="py-10">
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
 
-              <div className="max-h-[350px]">
+          <div className="max-h-[350px]">
+            <RadialChart currentPh={Number(selectedMarkerData?.ph_level) || 0} />
 
-                <RadialChart />
-              </div>
-            </div>
+
           </div>
         </div>
       </FrontLayout>
