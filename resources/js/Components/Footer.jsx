@@ -6,6 +6,7 @@ import {
   FaTwitter,
   FaTwitch,
 } from "react-icons/fa";
+import { Button } from "./ui/button";
 
 const sections = [
   {
@@ -36,8 +37,8 @@ const items = [
 
 const Footer = () => {
   return (
-    <div className="w-full mt-24 bg-white text-black-300 py-y px-2">
-      <div className=" max-w-[1240px] mx-auto grid grid-cols-2 md:grid-cols-6 border-b-2 border-gray-600 py-8 ">
+    <div className="w-full mt-24 bg-white text-black-300 py-y px-6">
+      <div className=" mx-auto grid grid-cols-2 md:grid-cols-6 border-b-2 border-gray-600 py-8 ">
         {sections.map((section, index) => (
           <div key={index}>
             <h6 className="font-bold uppercase pt-2">{section.title}</h6>
@@ -62,7 +63,7 @@ const Footer = () => {
               type="email"
               placeholder="Enter email.."
             />
-            <button className="p-2 mb-4">Subscribe</button>
+            <Button className="hover:scale-105 transition-all duration-200">Subscribe</Button>
           </form>
         </div>
       </div>

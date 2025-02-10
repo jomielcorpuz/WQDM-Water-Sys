@@ -18,6 +18,11 @@ import {
 } from "@/components/ui/table"
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import Footer from "@/Components/Footer";
+import { NitrateChart } from "@/Components/publicspatialcomp/NitrateChart";
+import { SalinityChart } from "@/Components/publicspatialcomp/SalinityChart";
+import { TDSChart } from "@/Components/publicspatialcomp/TDSChart";
+import { TotalHardnessChart } from "@/Components/publicspatialcomp/TotalHardnessChart";
+import { TurbidityChart } from "@/Components/publicspatialcomp/TurbidityChart";
 
 
 export default function Spatial() {
@@ -163,7 +168,7 @@ export default function Spatial() {
   return (
     <div>
       <FrontLayout>
-        <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-6 p-6">
+        <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-6 p-6">
 
           <Card>
             {/* Map section */}
@@ -219,7 +224,7 @@ export default function Spatial() {
           {/* Details Section */}
           <Card className="p-4">
             <Table>
-              <TableCaption>Details of the selected marker details.</TableCaption>
+              <TableCaption>Details of the selected marker.</TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead>Field</TableHead>
@@ -240,16 +245,20 @@ export default function Spatial() {
                   <TableCell>{currentMarkerData.status}</TableCell>
                 </TableRow>
                 <TableRow>
+                  <TableCell className="font-medium">Turbidity</TableCell>
+                  <TableCell>{currentMarkerData.turbidity} NTU</TableCell>
+                </TableRow>
+                <TableRow>
                   <TableCell className="font-medium">Total Dissolve Solids</TableCell>
-                  <TableCell>{currentMarkerData.total_dissolved_solids} NTU</TableCell>
+                  <TableCell>{currentMarkerData.total_dissolved_solids} mg/L</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Salinity</TableCell>
-                  <TableCell>{currentMarkerData.salinity}</TableCell>
+                  <TableCell>{currentMarkerData.salinity} mg/L</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Nitrate</TableCell>
-                  <TableCell>{currentMarkerData.nitrate}</TableCell>
+                  <TableCell>{currentMarkerData.nitrate} mg/L</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Latitude</TableCell>
@@ -266,15 +275,30 @@ export default function Spatial() {
               </TableBody>
             </Table>
           </Card>
-        </div>
-        <div className="px-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
 
+          <div className="">
+            <div className="mb-4 flex grid lg:grid-cols-2 gap-2">
 
-          <div className="max-h-[350px]">
-            <RadialChart currentPh={Number(selectedMarkerData?.ph_level) || 0} />
+              <TurbidityChart turbidity={Number(selectedMarkerData?.turbidity) || 0} />
+              <RadialChart currentPh={Number(selectedMarkerData?.ph_level) || 0} />
+            </div>
+            <div className=" flex grid lg:grid-cols-2 gap-2">
 
+              <TDSChart tds={Number(selectedMarkerData?.total_dissolved_solids) || 0} />
 
+              <SalinityChart salinity={Number(selectedMarkerData?.salinity) || 0} />
+            </div>
           </div>
+
+        </div>
+        {/* Charts Section */}
+        <div className="px-6 grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+
+
+
+          <TotalHardnessChart totalhardness={Number(selectedMarkerData?.total_hardness) || 0} />
+          <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
         </div>
         <Footer />
       </FrontLayout>
