@@ -5,13 +5,22 @@ import TextInput from "@/Components/TextInput";
 import Pagination from "@/Components/Pagination";
 import SelectInput from "@/Components/SelectInput";
 import Swal from 'sweetalert2';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
 import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
 import { Button } from "@/Components/ui/button";
 import { FilePenLine, Trash2 } from "lucide-react";
+import { Toaster } from "@/Components/ui/sonner";
+import { toast } from "sonner";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
+  useEffect(() => {
+    if (success) {
+      toast.success(success, {
+        description: "The site has been successfully updated.",
+      });
+    }
+  }, [success]);
   const [selectedSites, setSelectedSites] = useState([]);
 
   queryParams = queryParams || {};
@@ -143,11 +152,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
       <div className="py-10 w-full">
         <div className="mx-auto sm:px-6 lg:px-8">
-          {success && (
-            <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4">
-              {success}
-            </div>
-          )}
+
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg bg-white-800">
             <div className="p-6 text-gray-900 text-dark-100">
               <div className="overflow-auto">
