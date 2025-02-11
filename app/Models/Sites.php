@@ -29,7 +29,8 @@ class Sites extends Model
         'sulfate',
         'latitude',
         'longitude',
-        'status'
+        'status',
+        'active_status'
     ];
 
     // Define any custom casts for specific attributes

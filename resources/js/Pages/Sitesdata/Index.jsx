@@ -6,7 +6,8 @@ import Pagination from "@/Components/Pagination";
 import SelectInput from "@/Components/SelectInput";
 import Swal from 'sweetalert2';
 import { useState } from "react";
-import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constans";
+import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
+import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   const [selectedSites, setSelectedSites] = useState([]);
@@ -205,6 +206,14 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                       >
                         Turbidity
                       </TableHeading>
+                      <TableHeading
+                        name="active_status"
+                        sort_field={queryParams.sort_field}
+                        sort_direction={queryParams.sort_direction}
+                        sortChanged={sortChanged}
+                      >
+                        Status
+                      </TableHeading>
                       <th className="px-3 py-3">dissolve solids</th>
                       <th className="px-3 py-3 text-right">Actions</th>
                     </tr>
@@ -266,6 +275,13 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                         <td className="px-3 py-2">{sites.salinity}</td>
                         <td className="px-3 py-2">{sites.turbidity.toFixed(1)} NTU</td>
                         <td className="px-3 py-2">{sites.total_dissolved_solids}</td>
+                        <td className="px-3 py-2">
+                          <span className={"px-2 py-1 rounded-xl text-green-500 " + ACTIVE_STATUS_CLASS_MAP[sites.active_status]}>
+
+                            {ACTIVE_STATUS_TEXT_MAP[sites.active_status]}
+
+                          </span>
+                        </td>
 
                         <td className="px-3 py-2 text-nowrap">
                           <Link
