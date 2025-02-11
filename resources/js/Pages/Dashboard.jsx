@@ -2,6 +2,7 @@ import MainChart from '@/Components/dashboardcomp/mainchart';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Card } from "@/components/ui/card";
+import RadialChart from '@/Components/dashboardcomp/radialchart';
 
 export default function Dashboard() {
   return (
@@ -18,6 +19,7 @@ export default function Dashboard() {
         <Card>
           <MainChart />
         </Card>
+        <RadialChart />
       </div>
     </AuthenticatedLayout>
   );
