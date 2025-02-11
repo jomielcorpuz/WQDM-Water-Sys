@@ -8,6 +8,8 @@ import Swal from 'sweetalert2';
 import { useState } from "react";
 import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
 import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
+import { Button } from "@/Components/ui/button";
+import { FilePenLine, Trash2 } from "lucide-react";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   const [selectedSites, setSelectedSites] = useState([]);
@@ -212,9 +214,9 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        Status
+                        TDS
                       </TableHeading>
-                      <th className="px-3 py-3">dissolve solids</th>
+                      <th className="px-3 py-3"> Status</th>
                       <th className="px-3 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -267,37 +269,39 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                           </Link>
                         </th>
                         <td className="px-3 py-2">
-                          <span className={"px-2 py-1 rounded text-white " + WATER_STATUS_CLASS_MAP[sites.status]}>
+                          <span className={"px-2 py-1 rounded-xl font-semibold " + WATER_STATUS_CLASS_MAP[sites.status]}>
                             {WATER_STATUS_TEXT_MAP[sites.status]}
                           </span>
                         </td>
                         <td className="px-3 py-2">{sites.ph_level}</td>
-                        <td className="px-3 py-2">{sites.salinity}</td>
+                        <td className="px-3 py-2 ">{sites.salinity} ppt</td>
                         <td className="px-3 py-2">{sites.turbidity.toFixed(1)} NTU</td>
-                        <td className="px-3 py-2">{sites.total_dissolved_solids}</td>
+                        <td className="px-3 py-2">{sites.total_dissolved_solids} mg/L</td>
                         <td className="px-3 py-2">
-                          <span className={"px-2 py-1 rounded-xl text-green-500 " + ACTIVE_STATUS_CLASS_MAP[sites.active_status]}>
-
+                          <span className={"px-2 py-1 rounded-xl " + ACTIVE_STATUS_CLASS_MAP[sites.active_status]}>
                             {ACTIVE_STATUS_TEXT_MAP[sites.active_status]}
-
                           </span>
+
                         </td>
 
-                        <td className="px-3 py-2 text-nowrap">
-                          <Link
+                        <td className="px-3 py-2 text-nowrap justify-end flex">
+                          <Button
                             href={route("sitesdata.edit", sites.id)}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                            className="font-medium text-white py-2 px-2  mx-1 rounded-sm bg-blue-500 hover:bg-blue-600"
                             onClick={() => handleEditClick(sites)}
                           >
-                            Edit
-                          </Link>
+                            <FilePenLine />
+                            Update
+                          </Button>
 
-                          <button
+                          <Button
+                            variant="destructive"
                             onClick={() => deleteSite(sites)}
-                            className="font-medium text-red-600 text-red-500 hover:underline mx-1"
+                            className="font-medium hover:bg-red-600 "
                           >
-                            Delete
-                          </button>
+                            <Trash2 />
+
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -319,12 +323,12 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
                 </div>
 
-                <button
+                {/* <button
                   onClick={handleExport}
                   className="bg-gray-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-gray-600"
                 >
                   Export Excel
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

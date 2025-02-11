@@ -1,8 +1,8 @@
 export const WATER_STATUS_CLASS_MAP = {
-  potable: "bg-blue-600",
-  "non-potable": "bg-red-500",
-  Potable: "bg-blue-600",
-  "Non-potable": "bg-red-500",
+  potable: "bg-green-50 text-green-500",
+  "non-potable": "bg-red-50 text-red-500",
+  Potable: "bg-green-50 text-green-500",
+  "Non-potable": "bg-red-50 text-red-500",
 
 };
 export const WATER_STATUS_TEXT_MAP = {
@@ -13,8 +13,8 @@ export const WATER_STATUS_TEXT_MAP = {
 
 };
 export const ACTIVE_STATUS_CLASS_MAP = {
-  Active: "bg-green-50",
-  Inactive: "bg-red-500",
+  Active: "bg-green-50 text-green-500",
+  Inactive: "bg-red-100 text-red-500",
 
 };
 export const ACTIVE_STATUS_TEXT_MAP = {
