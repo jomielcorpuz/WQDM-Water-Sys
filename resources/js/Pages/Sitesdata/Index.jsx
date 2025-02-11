@@ -171,7 +171,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                       </TableHeading>
 
                       <TableHeading
-                        name="ph_level"
+                        name="status"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -180,7 +180,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                       </TableHeading>
 
                       <TableHeading
-                        name="salinity"
+                        name="ph_level"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -189,7 +189,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                       </TableHeading>
 
                       <TableHeading
-                        name="turbidity"
+                        name="salinity"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -198,7 +198,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                       </TableHeading>
 
                       <TableHeading
-                        name="total_dissolved_solids"
+                        name="turbidity"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}

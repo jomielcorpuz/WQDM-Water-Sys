@@ -47,7 +47,7 @@ export function SalinityChart({ salinity = 0 }) {
             <div className="flex justify-between">
 
               <div className="text-sm font-bold text-muted-foreground">0</div>
-              <div className="text-sm font-bold text-muted-foreground">10</div>
+              <div className="text-sm font-bold text-muted-foreground">35</div>
             </div>
           </dev>
         </div>

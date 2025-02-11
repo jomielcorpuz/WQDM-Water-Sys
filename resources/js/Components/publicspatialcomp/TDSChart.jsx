@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 ChartJS.register(ArcElement, Tooltip);
 
-const MAX_Value = 10;
+const MAX_Value = 500;
 
 const getColor = (val) => {
   if (val < 100) return "lightgreen";
@@ -47,7 +47,7 @@ export function TDSChart({ tds = 0 }) {
             <div className="flex justify-between">
 
               <div className="text-sm font-bold text-muted-foreground">0</div>
-              <div className="text-sm font-bold text-muted-foreground">10</div>
+              <div className="text-sm font-bold text-muted-foreground">500</div>
             </div>
           </dev>
         </div>
