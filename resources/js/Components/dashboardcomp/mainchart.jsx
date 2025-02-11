@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import useSiteStatus from "@/Hooks/useSiteStatus";
+import useSiteStatus from "@/Hooks/useSiteStatus"
 import {
   Card,
   CardContent,
@@ -23,8 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
+// Define chart configuration
 const chartConfig = {
   sites: {
     label: "Visitors",
@@ -40,27 +41,72 @@ const chartConfig = {
 }
 
 export default function MainChart() {
-  const { data: chartData, loading, error } = useSiteStatus();
-  console.log("Rendering chart with data:", chartData); // 🛠 Debugging log
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!chartData.length) return <p>No data available</p>;
+  const { data: chartData, loading, error } = useSiteStatus()
+  const [activeFilter, setActiveFilter] = useState("Last 30 days")
+
+  // Function to filter chart data based on selected filter
+  const filterDataByDate = (data, filter) => {
+    const now = new Date()
+    let filteredData = []
+    switch (filter) {
+      case "Last 7 days":
+        filteredData = data.filter((item) => {
+          const itemDate = new Date(item.date)
+          return now - itemDate <= 7 * 24 * 60 * 60 * 1000 // Last 7 days
+        })
+        break
+      case "Last 30 days":
+        filteredData = data.filter((item) => {
+          const itemDate = new Date(item.date)
+          return now - itemDate <= 30 * 24 * 60 * 60 * 1000 // Last 30 days
+        })
+        break
+      case "Last 3 months":
+        filteredData = data.filter((item) => {
+          const itemDate = new Date(item.date)
+          return now - itemDate <= 90 * 24 * 60 * 60 * 1000 // Last 3 months
+        })
+        break
+      default:
+        filteredData = data
+    }
+    return filteredData
+  }
+
+  const filteredData = filterDataByDate(chartData, activeFilter)
+
+  // Error and loading state handling
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error}</p>
+  if (!filteredData.length) return <p>No data available</p>
+
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Area Chart - Interactive</CardTitle>
-          <CardDescription>
-            Showing water quality
-          </CardDescription>
+          <CardDescription>Showing water quality</CardDescription>
         </div>
+        <Select value={activeFilter} onValueChange={setActiveFilter} className="h-10">
+          <SelectTrigger className="ml-auto h-7 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
+            <SelectValue placeholder="Select time range" />
+          </SelectTrigger>
+          <SelectContent align="end" className="rounded-xl">
+            <SelectItem value="Last 7 days" className="rounded-lg">
+              Last 7 days
+            </SelectItem>
+            <SelectItem value="Last 30 days" className="rounded-lg">
+              Last 30 days
+            </SelectItem>
+            <SelectItem value="Last 3 months" className="rounded-lg">
+              Last 3 months
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={chartData}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+          <AreaChart data={filteredData}>
             <defs>
               <linearGradient id="fillNonpotable" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -135,5 +181,5 @@ export default function MainChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

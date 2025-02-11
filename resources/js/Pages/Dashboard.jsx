@@ -15,8 +15,8 @@ export default function Dashboard() {
     >
       <Head title="Dashboard" />
 
-      <div className="py-12 grid lg:grid-cols-2 sm:grid-cols-1">
-        <Card>
+      <div className="py-12 px-6 grid lg:grid-cols-3 sm:grid-cols-1 gap-6">
+        <Card className="col-span-2">
           <MainChart />
         </Card>
         <RadialChart />

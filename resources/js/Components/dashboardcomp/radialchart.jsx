@@ -37,10 +37,6 @@ const chartConfig = {
     label: "Nonpotable",
     color: "hsl(var(--chart-1))",
   },
-  total: {
-    label: "Total",
-    color: "hsl(var(--chart-4))",
-  },
 }
 
 export default function RadialChart() {
@@ -67,7 +63,7 @@ export default function RadialChart() {
       <ChartStyle id="pie-interactive" config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">
-          <CardTitle>Radial Chart - Interactive</CardTitle>
+          <CardTitle>Radial Chart - Potable vs Non Potable</CardTitle>
           <CardDescription>Select month to filter data</CardDescription>
         </div>
         <Select value={activeMonth} onValueChange={setActiveMonth}>
@@ -100,7 +96,6 @@ export default function RadialChart() {
               data={[
                 { name: "Potable", value: totalPotable, fill: chartConfig.potable.color },
                 { name: "Nonpotable", value: totalNonPotable, fill: chartConfig.nonpotable.color },
-                { name: "Total", value: total, fill: chartConfig.total.color },
               ]}
               dataKey="value"
               nameKey="name"
@@ -122,7 +117,7 @@ export default function RadialChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {total.toLocaleString()}
+                          {totalPotable + totalNonPotable}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
