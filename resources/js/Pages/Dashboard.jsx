@@ -16,10 +16,13 @@ export default function Dashboard() {
       <Head title="Dashboard" />
 
       <div className="py-12 px-6 grid lg:grid-cols-3 sm:grid-cols-1 gap-6">
-        <Card className="col-span-2">
+        <Card className="lg:col-span-2">
           <MainChart />
         </Card>
-        <RadialChart />
+        <Card>
+
+          <RadialChart />
+        </Card>
       </div>
     </AuthenticatedLayout>
   );

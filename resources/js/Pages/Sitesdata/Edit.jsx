@@ -5,6 +5,10 @@ import SelectInput from "@/Components/SelectInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useRef } from "react";
+import { Card, CardContent, CardTitle } from "@/Components/ui/card";
+import { Separator } from "@/Components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import { Button } from "@/Components/ui/button";
 
 
 export default function Edit({ auth }) {
@@ -18,12 +22,13 @@ export default function Edit({ auth }) {
     ph_level: sites.ph_level || "",
     turbidity: sites.turbidity || "",
     total_dissolved_solids: sites.total_dissolved_solids || "",
-    total_hardness: sites.total_hardness ||"",
+    total_hardness: sites.total_hardness || "",
     salinity: sites.salinity || "",
     nitrate: sites.salinity || "",
     sulfate: sites.sulfate || "",
     latitude: sites.latitude || "",
     longitude: sites.longitude || "",
+    active_status: sites.active_status || "",
     _method: "PUT",
   });
 
@@ -54,7 +59,7 @@ export default function Edit({ auth }) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
+    console.log("Submitting Data:", data);
     post(route("sitesdata.update", sites.id));
   };
 
@@ -64,14 +69,14 @@ export default function Edit({ auth }) {
     const initMap = () => {
       // Check if latitude and longitude are valid numbers
       const isValidLatLng =
-      typeof data.latitude === "number" &&
-      typeof data.longitude === "number" &&
-      !isNaN(data.latitude) &&
-      !isNaN(data.longitude);
+        typeof data.latitude === "number" &&
+        typeof data.longitude === "number" &&
+        !isNaN(data.latitude) &&
+        !isNaN(data.longitude);
 
       const center = isValidLatLng ?
-      { lat: data.latitude, lng: data.longitude } :
-      { lat: 6.7361159998675095, lng: 125.38093326810893 }; // Default location
+        { lat: data.latitude, lng: data.longitude } :
+        { lat: 6.7361159998675095, lng: 125.38093326810893 }; // Default location
       const map = new google.maps.Map(mapRef.current, {
         center,
         zoom: 16,
@@ -125,205 +130,236 @@ export default function Edit({ auth }) {
         </div>
       }
     >
-        <Head title="Site Water Quality" />
+      <Head title="Site Water Quality" />
+      <div className="p-6 flex justify-center">
 
-<div className="py-12">
-  <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-      <form
-        onSubmit={onSubmit}
-        className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-                  <InputLabel htmlFor="name" value="Name (e.g., Sample Location)" />
-                  <TextInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={data.name}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("name", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "name")}
-                    ref={refs.name}
-                  />
-                  <InputError message={errors.name} className="mt-2" />
-                </div>
+        <Card className="p-6">
+          <CardTitle>
+            Update "{data.name}" Water Quality
+          </CardTitle>
+          <Separator className="mt-6 mb-6" />
+          <CardContent>
+            <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-6">
 
-                <div>
-                  <InputLabel htmlFor="ph_level" value="pH Level (e.g., 7.0 - Neutral)" />
-                  <TextInput
-                    id="ph_level"
-                    type="number"
-                    step="1"
-                    name="ph_level"
-                    value={data.ph_level}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("ph_level", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "ph_level")}
-                    ref={refs.ph_level}
-                  />
-                  <InputError message={errors.ph_level} className="mt-2" />
-                </div>
+              <div className="lg:col-span-2">
+                <InputLabel htmlFor="name" value="Name (e.g., Sample Location)" />
+                <TextInput
+                  id="name"
+                  type="text"
+                  name="name"
+                  value={data.name}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("name", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "name")}
+                  ref={refs.name}
+                />
+                <InputError message={errors.name} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="turbidity" value="Turbidity (NTU - e.g., 3.06)" />
-                  <TextInput
-                    id="turbidity"
-                    type="number"
-                    step="0.01"
-                    name="turbidity"
-                    value={data.turbidity}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("turbidity", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "turbidity")}
-                    ref={refs.turbidity}
-                  />
-                  <InputError message={errors.turbidity} className="mt-2" />
-                </div>
+              {/* Active Status Dropdown */}
+              <div className="mt-1">
+                <InputLabel htmlFor="active_status" value="Active Status" />
+                <Select value={data.active_status} onValueChange={(value) => {
+                  console.log("Selected Active Status:", value);
+                  setData("active_status", value);
+                }}>
+                  <SelectTrigger className="ml-auto h-10 w-full rounded-lg pl-2.5 " aria-label="Select active status">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent align="end" className="rounded-xl">
+                    <SelectItem value="Active" className="rounded-lg">
+                      Active
+                    </SelectItem>
+                    <SelectItem value="Inactive" className="rounded-lg">
+                      Inactive
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <InputError message={errors.active_status} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel
-                    htmlFor="total_dissolved_solids"
-                    value="Total Dissolved Solids (mg/L - e.g., 19.04)"
-                  />
-                  <TextInput
-                    id="total_dissolved_solids"
-                    type="number"
-                    name="total_dissolved_solids"
-                    value={data.total_dissolved_solids}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("total_dissolved_solids", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "total_dissolved_solids")}
-                    ref={refs.total_dissolved_solids}
-                  />
-                  <InputError
-                    message={errors.total_dissolved_solids}
-                    className="mt-2"
-                  />
-                </div>
+              <div>
+                <InputLabel htmlFor="total_hardness" value="Total Hardness (mg/L - e.g., 150)" />
+                <TextInput
+                  id="total_hardness"
+                  type="number"
+                  name="total_hardness"
+                  value={data.total_hardness}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("total_hardness", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "total_hardness")}
+                  ref={refs.total_hardness}
+                />
+                <InputError
+                  message={errors.total_hardness}
+                  className="mt-2"
+                />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="total_hardness" value="Total Hardness (mg/L - e.g., 150)" />
-                  <TextInput
-                    id="total_hardness"
-                    type="number"
-                    name="total_hardness"
-                    value={data.total_hardness}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("total_hardness", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "total_hardness")}
-                    ref={refs.total_hardness}
-                  />
-                  <InputError
-                    message={errors.total_hardness}
-                    className="mt-2"
-                  />
-                </div>
+              <div>
+                <InputLabel htmlFor="ph_level" value="pH Level (e.g., 7.0 - Neutral)" />
+                <TextInput
+                  id="ph_level"
+                  type="number"
+                  step="1"
+                  name="ph_level"
+                  value={data.ph_level}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("ph_level", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "ph_level")}
+                  ref={refs.ph_level}
+                />
+                <InputError message={errors.ph_level} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="salinity" value="Salinity (% - e.g., 0.5)" />
-                  <TextInput
-                    id="salinity"
-                    type="number"
-                    name="salinity"
-                    value={data.salinity}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("salinity", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "salinity")}
-                    ref={refs.salinity}
-                  />
-                  <InputError message={errors.salinity} className="mt-2" />
-                </div>
+              <div>
+                <InputLabel htmlFor="turbidity" value="Turbidity (NTU - e.g., 3.06)" />
+                <TextInput
+                  id="turbidity"
+                  type="number"
+                  step="0.01"
+                  name="turbidity"
+                  value={data.turbidity}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("turbidity", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "turbidity")}
+                  ref={refs.turbidity}
+                />
+                <InputError message={errors.turbidity} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="nitrate" value="Nitrate (mg/L - e.g., 10)" />
-                  <TextInput
-                    id="nitrate"
-                    type="number"
-                    name="nitrate"
-                    value={data.nitrate}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("nitrate", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "nitrate")}
-                    ref={refs.nitrate}
-                  />
-                  <InputError message={errors.nitrate} className="mt-2" />
-                </div>
+              <div>
+                <InputLabel
+                  htmlFor="total_dissolved_solids"
+                  value="Total Dissolved Solids (mg/L - e.g., 19.04)"
+                />
+                <TextInput
+                  id="total_dissolved_solids"
+                  type="number"
+                  name="total_dissolved_solids"
+                  value={data.total_dissolved_solids}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("total_dissolved_solids", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "total_dissolved_solids")}
+                  ref={refs.total_dissolved_solids}
+                />
+                <InputError
+                  message={errors.total_dissolved_solids}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <InputLabel htmlFor="salinity" value="Salinity (% - e.g., 0.5)" />
+                <TextInput
+                  id="salinity"
+                  type="number"
+                  name="salinity"
+                  value={data.salinity}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("salinity", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "salinity")}
+                  ref={refs.salinity}
+                />
+                <InputError message={errors.salinity} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="sulfate" value="Sulfate (mg/L - e.g., 25)" />
-                  <TextInput
-                    id="sulfate"
-                    type="number"
-                    name="sulfate"
-                    value={data.sulfate}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("sulfate", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "sulfate")}
-                    ref={refs.sulfate}
-                  />
-                  <InputError message={errors.sulfate} className="mt-2" />
-                </div>
+              <div>
+                <InputLabel htmlFor="nitrate" value="Nitrate (mg/L - e.g., 10)" />
+                <TextInput
+                  id="nitrate"
+                  type="number"
+                  name="nitrate"
+                  value={data.nitrate}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("nitrate", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "nitrate")}
+                  ref={refs.nitrate}
+                />
+                <InputError message={errors.nitrate} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="latitude" value="Latitude (e.g., 34.052235)" />
-                  <TextInput
-                    id="latitude"
-                    type="number"
-                    step="0.000001"
-                    name="latitude"
-                    value={data.latitude}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("latitude", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "latitude")}
-                    ref={refs.latitude}
-                  />
-                  <InputError message={errors.latitude} className="mt-2" />
-                </div>
+              <div>
+                <InputLabel htmlFor="sulfate" value="Sulfate (mg/L - e.g., 25)" />
+                <TextInput
+                  id="sulfate"
+                  type="number"
+                  name="sulfate"
+                  value={data.sulfate}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("sulfate", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "sulfate")}
+                  ref={refs.sulfate}
+                />
+                <InputError message={errors.sulfate} className="mt-2" />
+              </div>
 
-                <div>
-                  <InputLabel htmlFor="longitude" value="Longitude (e.g., -118.243683)" />
-                  <TextInput
-                    id="longitude"
-                    type="number"
-                    step="0.000001"
-                    name="longitude"
-                    value={data.longitude}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("longitude", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "longitude")}
-                    ref={refs.longitude}
-                  />
-                  <InputError message={errors.longitude} className="mt-2" />
-                </div>
-        </div>
+              <div>
+                <InputLabel htmlFor="latitude" value="Latitude (e.g., 34.052235)" />
+                <TextInput
+                  id="latitude"
+                  type="number"
+                  step="0.000001"
+                  name="latitude"
+                  value={data.latitude}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("latitude", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "latitude")}
+                  ref={refs.latitude}
+                />
+                <InputError message={errors.latitude} className="mt-2" />
+              </div>
 
-  {/* Google Maps Integration */}
-  <div className="mt-6">
-                <InputLabel value="Map" />
-                <div
-                  ref={mapRef}
-                  className="w-full h-80 border rounded"
-                ></div>
+              <div>
+                <InputLabel htmlFor="longitude" value="Longitude (e.g., -118.243683)" />
+                <TextInput
+                  id="longitude"
+                  type="number"
+                  step="0.000001"
+                  name="longitude"
+                  value={data.longitude}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("longitude", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "longitude")}
+                  ref={refs.longitude}
+                />
+                <InputError message={errors.longitude} className="mt-2" />
               </div>
 
 
-        <div className="mt-4 text-right">
-          <Link
-            href={route("sitesdata.index")}
-            className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
-          >
-            Cancel
-          </Link>
-          <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
-            Update
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-</AuthenticatedLayout>
+
+            </div>
+            {/* Google Maps Integration */}
+            <div className="mt-6">
+              <InputLabel value="Map" />
+              <div
+                ref={mapRef}
+                className="w-full h-80 border rounded"
+              ></div>
+            </div>
+
+            <form
+              onSubmit={onSubmit}
+              className=" mt-6"
+            >
+
+              <div className=" text-right">
+                <Button variant="outline"
+                  href={route("sitesdata.index")}
+                  className="mr-4 lg:w-[150px] lg:h-[40px] "
+                >
+                  Cancel
+                </Button>
+                <Button className="bg-blue-500 lg:w-[150px] lg:h-[40px]  transition-all hover:bg-blue-600">
+                  Update
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+
+        </Card>
+
+      </div>
+
+    </AuthenticatedLayout>
   );
 }

@@ -81,14 +81,14 @@ export default function MainChart() {
   if (!filteredData.length) return <p>No data available</p>
 
   return (
-    <Card>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-        <div className="grid flex-1 gap-1 text-center sm:text-left">
+    <Card className="flex flex-col">
+      <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
+        <div className="grid gap-1">
           <CardTitle>Area Chart - Interactive</CardTitle>
-          <CardDescription>Showing water quality</CardDescription>
+          <CardDescription>Showing water quality </CardDescription>
         </div>
-        <Select value={activeFilter} onValueChange={setActiveFilter} className="h-10">
-          <SelectTrigger className="ml-auto h-7 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
+        <Select value={activeFilter} onValueChange={setActiveFilter} >
+          <SelectTrigger className="ml-auto h-10 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
             <SelectValue placeholder="Select time range" />
           </SelectTrigger>
           <SelectContent align="end" className="rounded-xl">

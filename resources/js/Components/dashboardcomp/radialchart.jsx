@@ -61,13 +61,13 @@ export default function RadialChart() {
   return (
     <Card className="flex flex-col">
       <ChartStyle id="pie-interactive" config={chartConfig} />
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
+      <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
         <div className="grid gap-1">
-          <CardTitle>Radial Chart - Potable vs Non Potable</CardTitle>
+          <CardTitle>Potable vs Non Potable</CardTitle>
           <CardDescription>Select month to filter data</CardDescription>
         </div>
         <Select value={activeMonth} onValueChange={setActiveMonth}>
-          <SelectTrigger className="ml-auto h-7 w-[130px] rounded-lg pl-2.5" aria-label="Select a month">
+          <SelectTrigger className="ml-auto h-10 w-[130px] rounded-lg pl-2.5" aria-label="Select a month">
             <SelectValue placeholder="Select month" />
           </SelectTrigger>
           <SelectContent align="end" className="rounded-xl">

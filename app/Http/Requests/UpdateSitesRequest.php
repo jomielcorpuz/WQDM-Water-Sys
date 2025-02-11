@@ -30,6 +30,7 @@ class UpdateSitesRequest extends FormRequest
             "salinity" => ['required', 'numeric', 'min:0'],
             "nitrate" => ['required', 'numeric', 'min:0'],
             "sulfate" => ['required', 'numeric', 'min:0'],
+            "active_status" => ['required', 'string', 'max:255'],
             "latitude" => ['required', 'numeric', 'between:-90,90'],
             "longitude" => ['required', 'numeric', 'between:-180,180'],
         ];

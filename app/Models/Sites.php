@@ -30,7 +30,7 @@ class Sites extends Model
         'latitude',
         'longitude',
         'status',
-        'active_status'
+        'active_status',
     ];
 
     // Define any custom casts for specific attributes
