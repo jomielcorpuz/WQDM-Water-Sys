@@ -40,7 +40,7 @@ export default function Pagination({ links = [] }) {
             className={
               "inline-block py-2 px-4 rounded-md text-gray-980 text-sm " +
               (link.active ? "bg-gray-200 " : " ") +
-              "hover:bg-blue-400 duration-150"
+              "hover:bg-blue-300 duration-150"
             }
             dangerouslySetInnerHTML={{ __html: link.label }}
           ></Link>

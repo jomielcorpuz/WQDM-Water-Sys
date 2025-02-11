@@ -12,6 +12,7 @@ import { Button } from "@/Components/ui/button";
 import { FilePenLine, Trash2 } from "lucide-react";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   useEffect(() => {
@@ -154,7 +155,37 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
         <div className="mx-auto sm:px-6 lg:px-8">
 
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg bg-white-800">
+
             <div className="p-6 text-gray-900 text-dark-100">
+              <div className="flex justify-start items-start space-x-6 mb-6">
+                <TextInput
+                  className=""
+                  defaultValue={queryParams.name}
+                  placeholder="Site Name"
+                  onBlur={(e) =>
+                    searchFieldChanged("name", e.target.value)
+                  }
+                  onKeyPress={(e) => onKeyPress("name", e)}
+                />
+                <Select
+                  value={queryParams.status || ""}
+                  onValueChange={(value) => searchFieldChanged("status", value)}
+                >
+                  <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
+                    <SelectValue placeholder="Select " />
+                  </SelectTrigger>
+                  <SelectContent align="end" className="rounded-xl">
+                    <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
+                    <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div>
+
+
+                </div>
+
+
+              </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -214,7 +245,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                         Turbidity
                       </TableHeading>
                       <TableHeading
-                        name="active_status"
+                        name="total_dissolved_solids"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -222,35 +253,17 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                         TDS
                       </TableHeading>
                       <th className="px-3 py-3"> Status</th>
-                      <th className="px-3 py-3 text-right">Actions</th>
+                      <th className="px-3 py-3 text-right flex justify-center">Actions</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                     <tr className="text-nowrap">
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.name}
-                          placeholder="Site Name"
-                          onBlur={(e) =>
-                            searchFieldChanged("name", e.target.value)
-                          }
-                          onKeyPress={(e) => onKeyPress("name", e)}
-                        />
+
                       </th>
                       <th className="px-3 py-3">
-                        <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.status}
-                          onChange={(e) =>
-                            searchFieldChanged("status", e.target.value)
-                          }
-                        >
-                          <option value="">Select</option>
-                          <option value="potable">Potable</option>
-                          <option value="non-potable">Non-Potable</option>
-                        </SelectInput>
+
                       </th>
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
