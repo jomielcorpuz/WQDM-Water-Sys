@@ -31,19 +31,19 @@ export default function FrontLayout({ header, children }) {
                 href={route('dashboard')}
                 active={route().current('dashboard')}
               >
-                Dashboard
+                Home
               </NavLink>
               <NavLink
                 href={route('sitesdata.index')}
                 active={route().current('sitesdata.index')}
               >
-                Sites
+                About
               </NavLink>
               <NavLink
                 href={route('spatialviews.index')}
                 active={route().current('spatialviews.index')}
               >
-                Spatial
+                Contact
               </NavLink>
 
             </div>
@@ -93,7 +93,7 @@ export default function FrontLayout({ header, children }) {
             </div>
           </div>
         </div>
-
+        {/* Responsive Nav */}
         <div
           className={
             (showingNavigationDropdown ? 'block' : 'hidden') +
@@ -105,19 +105,19 @@ export default function FrontLayout({ header, children }) {
               href={route('dashboard')}
               active={route().current('dashboard')}
             >
-              Dashboard
+              Home
             </ResponsiveNavLink>
             <ResponsiveNavLink
               href={route('sitesdata.index')}
               active={route().current('sitesdata.index')}
             >
-              Sites
+              About
             </ResponsiveNavLink>
             <ResponsiveNavLink
               href={route('spatialviews.index')}
               active={route().current('spatialviews.index')}
             >
-              Spatial
+              Contact
             </ResponsiveNavLink>
           </div>
 

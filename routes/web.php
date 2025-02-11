@@ -7,6 +7,7 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpatialController;
 use App\Http\Controllers\Api\SitesController;
+use App\Http\Controllers\Api\SitesStatusController;
 use App\Http\Controllers\BatchuploadController;
 use App\Http\Controllers\SpatialviewsController;
 
@@ -58,6 +59,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/spatial', [SitesController::class, 'spatialPage'])->name('spatial.page');
 
 Route::get('/api/spatial', [SitesController::class, 'index'])->name('api.spatial');
+
+Route::get('/api/sitestatus', [SitesStatusController::class, 'getSiteData']);
 
 Route::get('/test-download', function() {
     // Using public_path() helper to get the correct path
