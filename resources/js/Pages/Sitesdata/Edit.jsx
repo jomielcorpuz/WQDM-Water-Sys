@@ -108,7 +108,8 @@ export default function Edit({ auth }) {
 
     // Load the Google Maps script
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBHLDq_jijQGM_mFIIE0lukBmX31msHvOs&callback=initMap`;
+    const apiKey = import.meta.env.VITE_UPDATESITES_GOOGLE_MAPS_API_KEY;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
     script.async = true;
     script.defer = true;
     window.initMap = initMap;

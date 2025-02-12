@@ -38,10 +38,9 @@ export default function Index({ auth }) {
   }, []);
 
   // Initialize map
-
   useEffect(() => {
     if (!mapRef.current) return;
-    const initMap = () => {
+    const initMap = async () => {
       const mapInstance = new google.maps.Map(mapRef.current, {
         center: { lat: 6.7380087165097216, lng: 125.36800714554644 },
         zoom: 15,
@@ -51,13 +50,13 @@ export default function Index({ auth }) {
     };
     if (!window.google || !window.google.maps) {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCbGjdTMW4ngIMov-8vQAdtKyc_DyhhJXs&callback=initMap`;
+      const apikey = import.meta.env.VITE_PRIVATE_SPATIAL_GOOGLE_MAPS_API_KEY;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apikey}&callback=initMap`;
       script.async = true;
       script.defer = true;
       window.initMap = initMap;
       document.body.appendChild(script);
     } else {
-
       if (!loading) {
         initMap();
       }

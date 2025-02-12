@@ -151,6 +151,8 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
       }
     >
 
+      <Head title="Sites" />
+
       <div className="py-10 w-full">
         <div className="mx-auto sm:px-6 lg:px-8">
 
@@ -159,7 +161,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
             <div className="p-6 text-gray-900 text-dark-100">
               <div className="flex justify-start items-start space-x-6 mb-6">
                 <TextInput
-                  className=""
+                  className="mr-6 w-[250px]"
                   defaultValue={queryParams.name}
                   placeholder="Site Name"
                   onBlur={(e) =>
@@ -172,7 +174,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                   onValueChange={(value) => searchFieldChanged("status", value)}
                 >
                   <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                    <SelectValue placeholder="Select " />
+                    <SelectValue placeholder="Filter " />
                   </SelectTrigger>
                   <SelectContent align="end" className="rounded-xl">
                     <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
@@ -331,11 +333,11 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
               <div className="flex justify-between gap-3 items-center" >
                 <div className="max-w-7xl sm:px-6 lg:px-2">
                   <p className="text-gray-600">
-                    <span><strong>Total Potable:</strong> </span>
+                    Total Potable:
                     <span className="text-gray-800"> {totalPotable}</span>
                   </p>
                   <p className="text-gray-600">
-                    <strong>Total Non-Potable:</strong>
+                    Total Non-Potable:
                     <span className="text-gray-800"> {totalNonPotable}</span>
                   </p>
 
