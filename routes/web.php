@@ -21,17 +21,18 @@ Route::get('/', function () {
     ]);
 });
 
-
-
 Route::get('/welcome', fn () => Inertia::render('Welcome'))->name('welcome');
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    //API
+    Route::get('/api/sitestatus', [SitesStatusController::class, 'getSiteData']);
+
     // Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Resource routes for DataController
     Route::resource('sitesdata', DataController::class);
-
 
     Route::resource('spatialviews', SpatialviewsController::class);
 
@@ -39,12 +40,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
     Route::get('/sitesdata/index', [DataController::class, 'sitesExport'])
     ->name('sitesdata.export');
-
-
-
 });
 
-
+//Public route api
+Route::get('/spatial', [SitesController::class, 'spatialPage'])->name('spatial.page');
+Route::middleware('throttle:60,1')->get('/api/spatial', [SitesController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -52,17 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::get('/spatial', function () {
-//     return Inertia::render('Spatial');
-// })->name('spatial');
-// Route::get('/spatial', [SpatialController::class, 'spatial'])->name('spatial');
-
-Route::get('/spatial', [SitesController::class, 'spatialPage'])->name('spatial.page');
-
-Route::get('/api/spatial', [SitesController::class, 'index'])->name('api.spatial');
-
-Route::get('/api/sitestatus', [SitesStatusController::class, 'getSiteData']);
-
+//Export
 Route::get('/test-download', function() {
     // Using public_path() helper to get the correct path
     $path = public_path('test.txt');
