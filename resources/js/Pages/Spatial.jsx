@@ -6,6 +6,9 @@ import { Card } from "@/Components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu";
 import { Button } from "@/Components/ui/button";
 import { Check } from "lucide-react"
+import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
+import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
+
 import {
   Table,
   TableBody,
@@ -16,12 +19,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
-import Footer from "@/Components/Footer";
 import { NitrateChart } from "@/Components/publicspatialcomp/NitrateChart";
 import { SalinityChart } from "@/Components/publicspatialcomp/SalinityChart";
 import { TDSChart } from "@/Components/publicspatialcomp/TDSChart";
 import { TotalHardnessChart } from "@/Components/publicspatialcomp/TotalHardnessChart";
 import { TurbidityChart } from "@/Components/publicspatialcomp/TurbidityChart";
+import Footer from "@/Layouts/NewFooter";
 
 
 export default function Spatial() {
@@ -165,9 +168,7 @@ export default function Spatial() {
   const currentAddress = selectedAddress || "Fetching address...";
 
   return (
-
     <FrontLayout>
-
       <Head title="Water Sites" />
       <div className="min-h-full py-6 bg-[#fafafa]">
         <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 p-6">
@@ -239,12 +240,25 @@ export default function Spatial() {
                   <TableCell>{currentMarkerData.name}</TableCell>
                 </TableRow>
                 <TableRow>
+                  <TableCell className="font-medium">Status</TableCell>
+                  <TableCell>
+                    <span className={"px-2 py-1 rounded-xl " + ACTIVE_STATUS_CLASS_MAP[currentMarkerData.active_status]}>
+                      {ACTIVE_STATUS_TEXT_MAP[currentMarkerData.active_status]}
+                    </span>
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
                   <TableCell className="font-medium">pH Level</TableCell>
                   <TableCell>{currentMarkerData.ph_level}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Water Condition</TableCell>
-                  <TableCell>{currentMarkerData.status}</TableCell>
+                  <TableCell>
+                    <span className={"px-2 py-1 rounded-xl " + WATER_STATUS_CLASS_MAP[currentMarkerData.status]}>
+                      {WATER_STATUS_TEXT_MAP[currentMarkerData.status]}
+                    </span>
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Turbidity</TableCell>
@@ -291,7 +305,6 @@ export default function Spatial() {
               <SalinityChart salinity={Number(selectedMarkerData?.salinity) || 0} />
             </div>
           </div>
-
         </div>
         {/* Charts Section */}
         <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -299,7 +312,6 @@ export default function Spatial() {
           <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
         </div>
       </div>
-
       <Footer />
     </FrontLayout>
   );
