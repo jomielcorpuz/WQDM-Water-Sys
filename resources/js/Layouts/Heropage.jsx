@@ -1,64 +1,72 @@
 
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Button } from '@/Components/ui/button';
 import { Link, router } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 import React, { useState } from 'react';
 
 export default function Hero(auth) {
+  const [showingNavigationDropdown, setShowingNavigationDropdown] =
+    useState(false);
   return (
     <div className="bg-gray-50">
-      <header className="py-4 md:py-6">
-        <div className="container px-4 mx-auto sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex-shrink-0">
-              <a href="/welcome" title="" className="flex rounded items-center ">
-                <img className="w-10 h-10 rounded-xl mr-2" src="/images/water_128px.png" alt="" />
-                <span className='font-bold text-xl text-blue-600'></span>
+      <header className="sticky top-0 z-10 border-b border-gray-100 bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur shrink-0">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-0">
+          <div className="flex h-16 justify-between items-center">
+            <div className="flex items-center ">
+              <a href="/welcome" title="" className="flex items-center rounded">
+                <img className="w-10 h-10 rounded-xl mr-2" src="/images/water_128px.png" alt="Water Logo" />
+                <span className="font-bold text-xl text-blue-600"></span>
               </a>
             </div>
 
-            <div className="flex lg:hidden">
-              <button type="button" className="text-gray-900">
-                <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-              </button>
+            <div className="hidden space-x-8 lg:flex">
+              <a href="/welcome" className="text-base font-medium text-gray-900 hover:text-opacity-50">Home</a>
+              <a href="/welcome" className="text-base font-medium text-gray-900 hover:text-opacity-50">About</a>
+              <a href="/welcome" className="text-base font-medium text-gray-900 hover:text-opacity-50">Contact</a>
+              <a href="/welcome" className="text-base font-medium text-gray-900 hover:text-opacity-50">About Water Quality</a>
             </div>
 
-            <div className="hidden lg:flex lg:ml-10 xl:ml-16 lg:items-center lg:justify-center lg:space-x-8 xl:space-x-16">
-              <a href="#" title="" className="text-base font-medium text-gray-900 transition-all duration-200 rounded focus:outline-none hover:text-opacity-50 focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"> Home </a>
-
-              <a href="#" title="" className="text-base font-medium text-gray-900 transition-all duration-200 rounded focus:outline-none hover:text-opacity-50 focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"> About </a>
-
-              <a href="#" title="" className="text-base font-medium text-gray-900 transition-all duration-200 rounded focus:outline-none hover:text-opacity-50 focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"> Contact </a>
-
-              <a href="#" title="" className="text-base font-medium text-gray-900 transition-all duration-200 rounded focus:outline-none hover:text-opacity-50 focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"> About Water Quality </a>
-            </div>
-
-            <nav className="flex">
+            <nav className="hidden lg:flex lg:ml-auto ">
               {auth.user ? (
-                <Link href={route('dashboard')}
-                  className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white" >
-                  Dashboard
-                </Link>) : (
+                <Link href={route('dashboard')} className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70">Dashboard</Link>
+              ) : (
                 <>
-                  <Link href={route('login')}
-                    className="rounded-md px-3 py-2 text-nowrap text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none bg-[#5fb8f1]  hover:bg-[#43a9ef] focus-visible:ring-[#43a9ef] dark:text-white hover:text-white/80 dark:focus-visible:ring-white" >
-                    Log in
-                  </Link>
-                  <Link href={route('register')}
-                    className="hidden sm:block ml-4 rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70  bg-[#5fb8f1]  hover:bg-[#43a9ef] focus:outline-none focus-visible:ring-[#96cff5] text-white dark:hover:text-white/80 dark:focus-visible:ring-white" >
-                    Register
-                  </Link>
+                  <Link href={route('login')} className="ml-4 rounded-md px-3 py-2 text-white bg-[#5fb8f1] hover:bg-[#43a9ef] transition">Log in</Link>
+                  <Link href={route('register')} className="ml-4 rounded-md px-3 py-2 text-white bg-[#5fb8f1] hover:bg-[#43a9ef] transition">Register</Link>
                 </>
               )}
             </nav>
+
+            <div className="-me-2 flex items-center lg:hidden">
+              <button
+                onClick={() => setShowingNavigationDropdown((prev) => !prev)}
+                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+              >
+                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                  <path className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                  <path className={showingNavigationDropdown ? 'inline-flex' : 'hidden'} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Responsive Nav */}
+        <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
+          <div className="space-y-1 pb-3 pt-2">
+            <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Home</a>
+            <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">About</a>
+            <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Contact</a>
+            <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">About Water Quality</a>
           </div>
         </div>
       </header>
 
+
+
       <section className="pt-12 pb-12 sm:pb-16 lg:pt-8">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="px-4 mx-auto max-w-8xl sm:px-6 lg:px-8">
           <div className="grid max-w-lg grid-cols-1 mx-auto lg:max-w-full lg:items-center lg:grid-cols-2 gap-y-12 lg:gap-x-16">
             <div>
               <div className="text-center lg:text-left">

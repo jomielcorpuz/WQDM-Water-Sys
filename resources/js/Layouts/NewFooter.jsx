@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 export default function Footer() {
   return (
     <section className="py-10 bg-gray-50 sm:pt-16 lg:pt-24">
-      <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+      <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-8xl">
         <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
             <img className="w-auto h-13" src="/images/dssc_header.png" alt="" />
