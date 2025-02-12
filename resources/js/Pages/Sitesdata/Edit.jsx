@@ -9,7 +9,7 @@ import { Card, CardContent, CardTitle } from "@/Components/ui/card";
 import { Separator } from "@/Components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
-
+import { router } from '@inertiajs/react';
 
 export default function Edit({ auth }) {
 
@@ -61,6 +61,11 @@ export default function Edit({ auth }) {
     e.preventDefault();
     console.log("Submitting Data:", data);
     post(route("sitesdata.update", sites.id));
+  };
+
+  const handleCancel = (e) => {
+    e.preventDefault();
+    router.get(route("sitesdata.index")); // Navigate without submitting
   };
 
   const mapRef = useRef(null);
@@ -339,8 +344,9 @@ export default function Edit({ auth }) {
 
               <div className=" text-right">
                 <Button variant="outline"
-                  href={route("sitesdata.index")}
+                  onClick={handleCancel}
                   className="mr-4 lg:w-[150px] lg:h-[40px] "
+
                 >
                   Cancel
                 </Button>

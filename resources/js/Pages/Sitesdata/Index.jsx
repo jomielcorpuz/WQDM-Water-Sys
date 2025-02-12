@@ -22,6 +22,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
       });
     }
   }, [success]);
+
   const [selectedSites, setSelectedSites] = useState([]);
 
   queryParams = queryParams || {};
