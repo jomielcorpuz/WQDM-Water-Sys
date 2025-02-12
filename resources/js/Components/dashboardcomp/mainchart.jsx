@@ -81,11 +81,11 @@ export default function MainChart() {
   if (!filteredData.length) return <p>No data available</p>
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col h-full min-h-[200px]">
       <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
         <div className="grid gap-1">
-          <CardTitle>Area Chart - Interactive</CardTitle>
-          <CardDescription>Showing water quality </CardDescription>
+          <CardTitle>Water Sites Condition</CardTitle>
+          <CardDescription>Showing monitored sites water condition </CardDescription>
         </div>
         <Select value={activeFilter} onValueChange={setActiveFilter} >
           <SelectTrigger className="ml-auto h-10 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
@@ -105,30 +105,30 @@ export default function MainChart() {
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer config={chartConfig} className="aspect-auto lg:h-[300px] md:h-[250px]  w-full">
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillNonpotable" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillnonpotable" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-potable)"
+                  stopColor="var(--color-nonpotable)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-potable)"
+                  stopColor="var(--color-nonpotable)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillPotable" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillpotable" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-nonpotable)"
+                  stopColor="var(--color-potable)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-nonpotable)"
+                  stopColor="var(--color-potable)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -163,17 +163,17 @@ export default function MainChart() {
               }
             />
             <Area
-              dataKey="nonpotable"
+              dataKey="potable"
               type="natural"
-              fill="url(#fillPotable)"
-              stroke="var(--color-nonpotable)"
+              fill="url(#fillpotable)"
+              stroke="var(--color-potable)"
               stackId="a"
             />
             <Area
-              dataKey="potable"
+              dataKey="nonpotable"
               type="natural"
-              fill="url(#fillNonpotable)"
-              stroke="var(--color-potable)"
+              fill="url(#fillnonpotable)"
+              stroke="var(--color-nonpotable)"
               stackId="a"
             />
             <ChartLegend content={<ChartLegendContent />} />

@@ -1,4 +1,3 @@
-"use client"
 
 import * as React from "react"
 import { Pie, PieChart, Sector, Label } from "recharts";
@@ -8,12 +7,15 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartStyle,
   ChartTooltip,
   ChartTooltipContent,
@@ -27,6 +29,8 @@ import {
 } from "@/components/ui/select"
 
 import useSiteStatus from "@/Hooks/useSiteStatus";// Custom hook to fetch data
+import { Separator } from "../ui/separator";
+import { CircleSmall, Dot } from "lucide-react";
 
 const chartConfig = {
   potable: {
@@ -59,12 +63,12 @@ export default function RadialChart() {
   const total = totalPotable + totalNonPotable
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col h-full">
       <ChartStyle id="pie-interactive" config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
         <div className="grid gap-1">
           <CardTitle>Potable vs Non Potable</CardTitle>
-          <CardDescription>Select month to filter data</CardDescription>
+          <CardDescription>Shows monitored sites</CardDescription>
         </div>
         <Select value={activeMonth} onValueChange={setActiveMonth}>
           <SelectTrigger className="ml-auto h-10 w-[130px] rounded-lg pl-2.5" aria-label="Select a month">
@@ -81,11 +85,11 @@ export default function RadialChart() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center pb-0">
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           id="pie-interactive"
           config={chartConfig}
-          className="mx-auto aspect-square w-full max-w-[300px]"
+          className="aspect-auto aspect-0 w-full lg:h-[250px] md:h-[250px] sm:h-[250px]"
         >
           <PieChart>
             <ChartTooltip
@@ -133,7 +137,27 @@ export default function RadialChart() {
               />
             </Pie>
           </PieChart>
+
         </ChartContainer>
+        <Separator />
+        <div className="flex justify-between items-center mt-2  ">
+          <div className="flex items-center mb-2">
+            {/* Use inline-block to prevent expansion */}
+            <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.potable.color }} />
+            <span className="text-sm ml-2">{chartConfig.potable.label}</span>
+          </div>
+          <div><p className="text-sm">{totalPotable}</p></div>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            {/* Use inline-block to prevent expansion */}
+            <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.nonpotable.color }} />
+            <span className="text-sm ml-2">{chartConfig.nonpotable.label}</span>
+          </div>
+          <div><p className="text-sm">{totalNonPotable}</p></div>
+        </div>
+
       </CardContent>
     </Card>
   )
