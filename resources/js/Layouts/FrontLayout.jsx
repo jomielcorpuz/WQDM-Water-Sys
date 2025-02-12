@@ -28,8 +28,8 @@ export default function FrontLayout({ header, children }) {
 
             <div className=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
               <NavLink
-                href={route('dashboard')}
-                active={route().current('dashboard')}
+                href={route('welcome')}
+                active={route().current('welcome')}
               >
                 Home
               </NavLink>

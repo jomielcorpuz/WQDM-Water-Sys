@@ -295,10 +295,6 @@ export default function Spatial() {
         </div>
         {/* Charts Section */}
         <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-
-
-
           <TotalHardnessChart totalhardness={Number(selectedMarkerData?.total_hardness) || 0} />
           <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
         </div>
