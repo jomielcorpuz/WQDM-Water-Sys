@@ -1,3 +1,4 @@
+import Footer from '@/Components/Footer';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
@@ -15,7 +16,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
   return (
     <> <Head title="Welcome" />
       <div className="absolute bg-cover z-0 inset-0 bg-center min-h-screen" style={{ backgroundImage: "url('/images/img.png')" }}></div>
-      <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+      <div className=" text-black/50 dark:bg-black dark:text-white/50">
         <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
           <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
             <header className="flex items-center justify-between py-10">
@@ -51,13 +52,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 View Spatial Data
               </Link>
             </main>
-            <footer
-              className="py-10 text-center text-sm text-black dark:text-white/70">
-              UI Development on Progress
-            </footer>
+
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
