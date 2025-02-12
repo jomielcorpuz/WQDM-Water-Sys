@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SitesController;
 use App\Http\Controllers\Api\SitesStatusController;
 use App\Http\Controllers\BatchuploadController;
 use App\Http\Controllers\SpatialviewsController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -26,7 +27,7 @@ Route::get('/welcome', fn () => Inertia::render('Welcome'))->name('welcome');
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard route
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Resource routes for DataController
     Route::resource('sitesdata', DataController::class);
