@@ -13,7 +13,7 @@ export default function FrontLayout({ header, children }) {
     useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen">
       <nav className="sticky z-10 border-b border-gray-100 bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur top-0  shrink-0  ">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">

@@ -1,4 +1,4 @@
-import Footer from '@/Components/Footer';
+import Footer from '@/Layouts/NewFooter';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
@@ -15,11 +15,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
   return (
     <> <Head title="Welcome" />
-      <div className="absolute bg-cover z-0 inset-0 bg-center min-h-screen" style={{ backgroundImage: "url('/images/img.png')" }}></div>
+      <div className="absolute inset-0 min-h-full bg-gradient-to-tr from-slate-50 to-sky-200"></div>
+
       <div className=" text-black/50 dark:bg-black dark:text-white/50">
         <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
           <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
             <header className="flex items-center justify-between py-10">
+
               <div className="flex">
                 <h1 className="text-3xl font-bold text-black dark:text-white">
                   Water Quality Data System
@@ -44,8 +46,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 )}
               </nav>
             </header>
-            <main className=" flex flex-col justify-center items-center h-screen">
-              {/* <img src="/images/background.jpg" alt="Background" className="w-full h-auto mb-4 rounded-md shadow" /> */}
+            <main className=" flex flex-col justify-center items-center h-full">
+
               <p className=" text-lg/relaxed text-left px-20">
                 The integration of GIS functionalities into the system will enable the mapping of water quality data, providing users with the ability to observe the spatial distribution of parameters such as turbidity and pH at various locations. This will offer an interactive method for using geotagged data points to track and analyze regional variations in water quality. </p>
               <Link href="/spatial" className="mt-6 inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-[#5fb8f1] rounded-md shadow hover:bg-[#43a9ef]  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#96cff5]" >

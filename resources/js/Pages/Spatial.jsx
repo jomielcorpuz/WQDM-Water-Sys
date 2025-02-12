@@ -169,138 +169,141 @@ export default function Spatial() {
     <FrontLayout>
 
       <Head title="Water Sites" />
-      <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-6 p-6">
-
-        <Card>
-          {/* Map section */}
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h1 className="text-xl font-semi-bold text-gray-800 ">Water Sites Map</h1>
-              <div className="flex items-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline">Filter
-                      <ChevronDownIcon />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Choose Water Quality</DropdownMenuLabel>
-                    <div className="space-y-2 p-2">
-                      <DropdownMenuItem
-                        onClick={() => handleSelectChange("all")}
-                        className={selectedValue === "all" ? "bg-blue-100" : ""}
-                      >
-                        {selectedValue === "all" && <Check className="mr-2" />}
-                        All
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleSelectChange("Potable")}
-                        className={selectedValue === "Potable" ? "bg-blue-100" : ""}
-                      >
-                        {selectedValue === "Potable" && <Check className="mr-2" />}
-                        Potable
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleSelectChange("Non-potable")}
-                        className={selectedValue === "Non-potable" ? "bg-blue-100" : ""}
-                      >
-                        {selectedValue === "Non-potable" && <Check className="mr-2" />}
-                        Non-potable
-                      </DropdownMenuItem>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+      <div className="min-h-full py-6 bg-[#fafafa]">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 p-6">
+          {/* Map Section */}
+          <Card>
+            {/* Map section */}
+            <div className="p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h1 className="text-xl font-semi-bold text-gray-800 ">Water Sites Map</h1>
+                <div className="flex items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">Filter
+                        <ChevronDownIcon />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Choose Water Quality</DropdownMenuLabel>
+                      <div className="space-y-2 p-2">
+                        <DropdownMenuItem
+                          onClick={() => handleSelectChange("all")}
+                          className={selectedValue === "all" ? "bg-blue-100" : ""}
+                        >
+                          {selectedValue === "all" && <Check className="mr-2" />}
+                          All
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleSelectChange("Potable")}
+                          className={selectedValue === "Potable" ? "bg-blue-100" : ""}
+                        >
+                          {selectedValue === "Potable" && <Check className="mr-2" />}
+                          Potable
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleSelectChange("Non-potable")}
+                          className={selectedValue === "Non-potable" ? "bg-blue-100" : ""}
+                        >
+                          {selectedValue === "Non-potable" && <Check className="mr-2" />}
+                          Non-potable
+                        </DropdownMenuItem>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
+              {loading ? (
+                <p>Loading...</p>
+              ) : (
+                <div className="flex flex-row">
+                  {/* Map */}
+                  <div ref={mapRef} className="w-full h-[450px] border rounded mt-2 mb-2"></div>
+                </div>
+              )}
             </div>
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <div className="flex flex-row">
-                {/* Map */}
-                <div ref={mapRef} className="w-full h-[450px] border rounded mt-2 mb-2"></div>
-              </div>
-            )}
+          </Card>
+          {/* Details Section */}
+          <Card className="p-4">
+            <Table>
+              <TableCaption>Details of the selected marker.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Field</TableHead>
+                  <TableHead>Value</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium">Name</TableCell>
+                  <TableCell>{currentMarkerData.name}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">pH Level</TableCell>
+                  <TableCell>{currentMarkerData.ph_level}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Water Condition</TableCell>
+                  <TableCell>{currentMarkerData.status}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Turbidity</TableCell>
+                  <TableCell>{currentMarkerData.turbidity} NTU</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Total Dissolve Solids</TableCell>
+                  <TableCell>{currentMarkerData.total_dissolved_solids} mg/L</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Salinity</TableCell>
+                  <TableCell>{currentMarkerData.salinity} mg/L</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Nitrate</TableCell>
+                  <TableCell>{currentMarkerData.nitrate} mg/L</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Latitude</TableCell>
+                  <TableCell>{currentMarkerData.latitude}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Longitude</TableCell>
+                  <TableCell>{currentMarkerData.longitude}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Address</TableCell>
+                  <TableCell>{currentAddress}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Card>
+          {/* Charts1 Section */}
+          <div className="md:col-span-2 lg:col-span-1">
+            <div className="mb-4 flex grid lg:grid-cols-2 gap-2">
+
+              <TurbidityChart turbidity={Number(selectedMarkerData?.turbidity) || 0} />
+              <RadialChart currentPh={Number(selectedMarkerData?.ph_level) || 0} />
+            </div>
+            <div className=" flex grid lg:grid-cols-2 gap-2">
+
+              <TDSChart tds={Number(selectedMarkerData?.total_dissolved_solids) || 0} />
+
+              <SalinityChart salinity={Number(selectedMarkerData?.salinity) || 0} />
+            </div>
           </div>
-        </Card>
-        {/* Details Section */}
-        <Card className="p-4">
-          <Table>
-            <TableCaption>Details of the selected marker.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Field</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">Name</TableCell>
-                <TableCell>{currentMarkerData.name}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">pH Level</TableCell>
-                <TableCell>{currentMarkerData.ph_level}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Water Condition</TableCell>
-                <TableCell>{currentMarkerData.status}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Turbidity</TableCell>
-                <TableCell>{currentMarkerData.turbidity} NTU</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Total Dissolve Solids</TableCell>
-                <TableCell>{currentMarkerData.total_dissolved_solids} mg/L</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Salinity</TableCell>
-                <TableCell>{currentMarkerData.salinity} mg/L</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Nitrate</TableCell>
-                <TableCell>{currentMarkerData.nitrate} mg/L</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Latitude</TableCell>
-                <TableCell>{currentMarkerData.latitude}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Longitude</TableCell>
-                <TableCell>{currentMarkerData.longitude}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Address</TableCell>
-                <TableCell>{currentAddress}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Card>
 
-        <div className="">
-          <div className="mb-4 flex grid lg:grid-cols-2 gap-2">
-
-            <TurbidityChart turbidity={Number(selectedMarkerData?.turbidity) || 0} />
-            <RadialChart currentPh={Number(selectedMarkerData?.ph_level) || 0} />
-          </div>
-          <div className=" flex grid lg:grid-cols-2 gap-2">
-
-            <TDSChart tds={Number(selectedMarkerData?.total_dissolved_solids) || 0} />
-
-            <SalinityChart salinity={Number(selectedMarkerData?.salinity) || 0} />
-          </div>
         </div>
+        {/* Charts Section */}
+        <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
 
+
+
+
+          <TotalHardnessChart totalhardness={Number(selectedMarkerData?.total_hardness) || 0} />
+          <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
+        </div>
       </div>
-      {/* Charts Section */}
-      <div className="px-6 grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-
-
-
-        <TotalHardnessChart totalhardness={Number(selectedMarkerData?.total_hardness) || 0} />
-        <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
-      </div>
       <Footer />
     </FrontLayout>
   );

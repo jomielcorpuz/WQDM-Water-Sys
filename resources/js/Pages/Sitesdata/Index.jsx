@@ -13,6 +13,8 @@ import { FilePenLine, Trash2 } from "lucide-react";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import { Card } from "@/Components/ui/card";
+import { Separator } from "@/Components/ui/separator";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   useEffect(() => {
@@ -155,205 +157,197 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
       <Head title="Sites" />
 
       <div className="py-10 w-full">
-        <div className="mx-auto sm:px-6 lg:px-8">
-
-          <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg bg-white-800">
-
-            <div className="p-6 text-gray-900 text-dark-100">
-              <div className="flex justify-start items-start space-x-6 mb-6">
-                <TextInput
-                  className="mr-6 w-[250px]"
-                  defaultValue={queryParams.name}
-                  placeholder="Site Name"
-                  onBlur={(e) =>
-                    searchFieldChanged("name", e.target.value)
-                  }
-                  onKeyPress={(e) => onKeyPress("name", e)}
-                />
-                <Select
-                  value={queryParams.status || ""}
-                  onValueChange={(value) => searchFieldChanged("status", value)}
-                >
-                  <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                    <SelectValue placeholder="Filter " />
-                  </SelectTrigger>
-                  <SelectContent align="end" className="rounded-xl">
-                    <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
-                    <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
-                  </SelectContent>
-                </Select>
-                <div>
+        <Card className="mx-6 sm:px-6 lg:px-8">
 
 
-                </div>
+
+          <div className="py-6 text-gray-900 text-dark-100">
+            <div className="flex justify-start items-start space-x-6 mb-6">
+              <TextInput
+                className="mr-6 w-[250px]"
+                defaultValue={queryParams.name}
+                placeholder="Site Name"
+                onBlur={(e) =>
+                  searchFieldChanged("name", e.target.value)
+                }
+                onKeyPress={(e) => onKeyPress("name", e)}
+              />
+              <Select
+                value={queryParams.status || ""}
+                onValueChange={(value) => searchFieldChanged("status", value)}
+              >
+                <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
+                  <SelectValue placeholder="Filter " />
+                </SelectTrigger>
+                <SelectContent align="end" className="rounded-xl">
+                  <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
+                  <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
+                </SelectContent>
+              </Select>
+              <div>
 
 
               </div>
-              <div className="overflow-auto">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                    <tr className="text-nowrap">
 
-                      <TableHeading
-                        name="id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        ID
-                      </TableHeading>
 
-                      <TableHeading
-                        name="name"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Name
-                      </TableHeading>
+            </div>
+            <div className="overflow-auto border rounded-xl">
+              <table className="w-full  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
+                  <tr className="text-nowrap">
 
-                      <TableHeading
-                        name="status"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Condition
-                      </TableHeading>
+                    <TableHeading
+                      name="id"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      ID
+                    </TableHeading>
 
-                      <TableHeading
-                        name="ph_level"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        PH Level
-                      </TableHeading>
+                    <TableHeading
+                      name="name"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Name
+                    </TableHeading>
 
-                      <TableHeading
-                        name="salinity"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Salinity
-                      </TableHeading>
+                    <TableHeading
+                      name="status"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Condition
+                    </TableHeading>
 
-                      <TableHeading
-                        name="turbidity"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Turbidity
-                      </TableHeading>
-                      <TableHeading
-                        name="total_dissolved_solids"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        TDS
-                      </TableHeading>
-                      <th className="px-3 py-3"> Status</th>
-                      <th className="px-3 py-3 text-right flex justify-center">Actions</th>
-                    </tr>
-                  </thead>
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                    <tr className="text-nowrap">
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3">
+                    <TableHeading
+                      name="ph_level"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      PH Level
+                    </TableHeading>
 
+                    <TableHeading
+                      name="salinity"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Salinity
+                    </TableHeading>
+
+                    <TableHeading
+                      name="turbidity"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Turbidity
+                    </TableHeading>
+                    <TableHeading
+                      name="total_dissolved_solids"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      TDS
+                    </TableHeading>
+                    <TableHeading
+                      name="active_status"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Status
+                    </TableHeading>
+                    <th className="px-3 py-3 text-right flex justify-center">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {sites_data.data.map((sites) => (
+                    <tr
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      key={sites.id}
+                    >
+
+                      <td className="px-3 py-2">{sites.id}</td>
+
+                      <th className="px-3 py-2 text-black text-nowrap text-sm hover:underline hover:text-blue-400">
+                        <Link href={route("sitesdata.show", sites.id)}>
+                          {sites.name}
+                        </Link>
                       </th>
-                      <th className="px-3 py-3">
+                      <td className="px-3 py-2">
+                        <span className={"px-2 py-1 rounded-xl font-semibold " + WATER_STATUS_CLASS_MAP[sites.status]}>
+                          {WATER_STATUS_TEXT_MAP[sites.status]}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2">{sites.ph_level}</td>
+                      <td className="px-3 py-2 ">{sites.salinity} ppt</td>
+                      <td className="px-3 py-2">{sites.turbidity.toFixed(1)} NTU</td>
+                      <td className="px-3 py-2">{sites.total_dissolved_solids} mg/L</td>
+                      <td className="px-3 py-2">
+                        <span className={"px-2 py-1 rounded-xl " + ACTIVE_STATUS_CLASS_MAP[sites.active_status]}>
+                          {ACTIVE_STATUS_TEXT_MAP[sites.active_status]}
+                        </span>
 
-                      </th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
+                      </td>
+
+                      <td className="px-3 py-2 text-nowrap justify-end flex">
+                        <Button
+                          href={route("sitesdata.edit", sites.id)}
+                          className="font-medium text-white py-2 px-2  mx-1 rounded-sm bg-blue-500 hover:bg-blue-600"
+                          onClick={() => handleEditClick(sites)}
+                        >
+                          <FilePenLine />
+                          Update
+                        </Button>
+
+                        <Button
+                          variant="destructive"
+                          onClick={() => deleteSite(sites)}
+                          className="font-medium hover:bg-red-600 "
+                        >
+                          <Trash2 />
+
+                        </Button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {sites_data.data.map((sites) => (
-                      <tr
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        key={sites.id}
-                      >
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Pagination links={sites_data.meta.links} />
+            <Separator className="my-6" />
+            <div className="flex justify-between gap-3 items-center" >
+              <div className="max-w-7xl sm:px-6 lg:px-2">
+                <p className="text-gray-600">
+                  Total Potable:
+                  <span className="text-gray-800"> {totalPotable}</span>
+                </p>
+                <p className="text-gray-600">
+                  Total Non-Potable:
+                  <span className="text-gray-800"> {totalNonPotable}</span>
+                </p>
 
-                        <td className="px-3 py-2">{sites.id}</td>
-
-                        <th className="px-3 py-2 text-black text-nowrap text-sm hover:underline hover:text-blue-400">
-                          <Link href={route("sitesdata.show", sites.id)}>
-                            {sites.name}
-                          </Link>
-                        </th>
-                        <td className="px-3 py-2">
-                          <span className={"px-2 py-1 rounded-xl font-semibold " + WATER_STATUS_CLASS_MAP[sites.status]}>
-                            {WATER_STATUS_TEXT_MAP[sites.status]}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2">{sites.ph_level}</td>
-                        <td className="px-3 py-2 ">{sites.salinity} ppt</td>
-                        <td className="px-3 py-2">{sites.turbidity.toFixed(1)} NTU</td>
-                        <td className="px-3 py-2">{sites.total_dissolved_solids} mg/L</td>
-                        <td className="px-3 py-2">
-                          <span className={"px-2 py-1 rounded-xl " + ACTIVE_STATUS_CLASS_MAP[sites.active_status]}>
-                            {ACTIVE_STATUS_TEXT_MAP[sites.active_status]}
-                          </span>
-
-                        </td>
-
-                        <td className="px-3 py-2 text-nowrap justify-end flex">
-                          <Button
-                            href={route("sitesdata.edit", sites.id)}
-                            className="font-medium text-white py-2 px-2  mx-1 rounded-sm bg-blue-500 hover:bg-blue-600"
-                            onClick={() => handleEditClick(sites)}
-                          >
-                            <FilePenLine />
-                            Update
-                          </Button>
-
-                          <Button
-                            variant="destructive"
-                            onClick={() => deleteSite(sites)}
-                            className="font-medium hover:bg-red-600 "
-                          >
-                            <Trash2 />
-
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
-              <Pagination links={sites_data.meta.links} />
-              <hr className="my-4 border-t-2 border-gray-300" />
-              <div className="flex justify-between gap-3 items-center" >
-                <div className="max-w-7xl sm:px-6 lg:px-2">
-                  <p className="text-gray-600">
-                    Total Potable:
-                    <span className="text-gray-800"> {totalPotable}</span>
-                  </p>
-                  <p className="text-gray-600">
-                    Total Non-Potable:
-                    <span className="text-gray-800"> {totalNonPotable}</span>
-                  </p>
 
-                </div>
-
-                {/* <button
+              {/* <button
                   onClick={handleExport}
                   className="bg-gray-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-gray-600"
                 >
                   Export Excel
                 </button> */}
-              </div>
             </div>
           </div>
-        </div>
+
+        </Card>
       </div>
     </AuthenticatedLayout>
   );
