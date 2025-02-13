@@ -7,7 +7,6 @@ export default function Welcome({ }) {
     <>
       <Head title="Welcome" />
       <Hero />
-      <Footer />
     </>
   );
 }
