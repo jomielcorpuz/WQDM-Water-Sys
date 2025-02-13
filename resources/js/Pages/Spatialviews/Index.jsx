@@ -5,8 +5,6 @@ import SelectInput from "@/Components/SelectInput";
 import Paginatedata from "@/Components/Paginatedata";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
-import RadialChart from "@/Components/dashboardcomp/radialchart";
-import SpatialPieChart from "@/Components/spatialviewscomp/piechart";
 import { PieChart, Pie, Label } from "recharts";
 
 
@@ -232,7 +230,7 @@ export default function Index({ auth }) {
             {loading ? (
               <p>Loading...</p>
             ) : (
-              <div className="flex flex-row ">
+              <div className="flex flex-row mt-4">
                 {/* Map  */}
                 <div ref={mapRef} className="w-full h-96 border rounded mb-4"></div>
 
