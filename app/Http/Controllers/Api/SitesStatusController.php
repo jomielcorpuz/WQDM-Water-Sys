@@ -12,8 +12,8 @@ class SitesStatusController extends Controller
     public function getSiteData()
     {
         $sites = Sites::selectRaw('DATE(created_at) as date,
-                SUM(CASE WHEN status = "potable" THEN 1 ELSE 0 END) as potable,
-                SUM(CASE WHEN status = "non-potable" THEN 1 ELSE 0 END) as nonpotable')
+                SUM(CASE WHEN status COLLATE utf8_general_ci = "potable" THEN 1 ELSE 0 END) as potable,
+                SUM(CASE WHEN status COLLATE utf8_general_ci = "non-potable" THEN 1 ELSE 0 END) as nonpotable')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
