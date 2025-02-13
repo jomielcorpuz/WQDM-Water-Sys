@@ -312,7 +312,6 @@ export default function Spatial() {
           <NitrateChart nitrate={Number(selectedMarkerData?.nitrate) || 0} />
         </div>
       </div>
-      <Footer />
     </FrontLayout>
   );
 
