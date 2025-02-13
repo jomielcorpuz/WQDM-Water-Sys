@@ -8,12 +8,9 @@ export default function Index({ auth }) {
   const [loading, setLoading] = useState(true);
   const mapRef = useRef(null);
   const [waterQualityData, setWaterQualityData] = useState([]);
-  const [selectedMarkerData, setSelectedMarkerData] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState("");
   const [map, setMap] = useState(null);
   const markers = useRef([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [paginationLinks, setPaginationLinks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
@@ -23,13 +20,9 @@ export default function Index({ auth }) {
       try {
         const response = await fetch(url); // API endpoint
         const data = await response.json();
-        console.log(data);
         setWaterQualityData(data.data || data);
-        //setFilteredData(data.data || data);
-
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching spatial data:", error);
         setLoading(false);
       }
     };
@@ -75,7 +68,6 @@ export default function Index({ auth }) {
     markers.current.forEach(marker => marker.setMap(null));
     markers.current = [];
 
-    const geocoder = new google.maps.Geocoder();
     filteredData.forEach(data => {
       const marker = new google.maps.Marker({
         position: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) },
@@ -103,23 +95,10 @@ export default function Index({ auth }) {
         setSelectedMarkerData(data);
         infoWindow.open(map, marker);
 
-        geocoder.geocode(
-          { location: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) } },
-          (results, status) => {
-            if (status === "OK" && results[0]) {
-              setSelectedAddress(results[0].formatted_address);
-            }
-            else {
-              console.error("Geocoder failed due to: ", status);
-              setSelectedAddress("Address not found.");
-            }
-          }
-        );
+
       });
     });
   }, [filteredData, map]);
-
-  //GOOGLE MAP API KEY= AIzaSyCbGjdTMW4ngIMov-8vQAdtKyc_DyhhJXs
 
   // Handle SelectInput change
   const handleSelectChange = (e) => {
