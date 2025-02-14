@@ -37,6 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
     Route::get('/sitesdata/index', [DataController::class, 'sitesExport'])
     ->name('sitesdata.export');
+
+    Route::get('sitesdata/create', [DataController::class, 'create'])->name('sitesdata.create');
+    Route::post('sitesdata', [DataController::class, 'store'])->name('sitesdata.store');
+
 });
 
 //Public route api
