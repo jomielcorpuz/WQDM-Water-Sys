@@ -16,11 +16,14 @@ const getColor = (val) => {
 
 
 export function TDSChart({ tds = 0 }) {
+  const filledValue = Math.min(tds, MAX_Value); // Ensure it never exceeds MAX_Value
+  const remainingValue = Math.max(MAX_Value - tds, 0); // Prevent negative values
+
   const data = {
     labels: ["pH Level", "Remaining"],
     datasets: [
       {
-        data: [tds, MAX_Value - tds],
+        data: [filledValue, remainingValue],
         backgroundColor: [getColor(tds), "#e0e0e0"],
         borderWidth: 0,
         cutout: "70%",
