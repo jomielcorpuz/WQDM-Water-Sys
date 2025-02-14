@@ -24,6 +24,7 @@ class StoreSitesRequest extends FormRequest
         return [
             "name" => ['required', 'string', 'max:255'],
             "active_status" => ['required', 'string', 'max:255'],
+            "address" => ['required', 'string', 'max:255'],
             "ph_level" => ['required', 'numeric', 'between:0,14'],
             "turbidity" => ['required', 'numeric', 'min:0'],
             "total_dissolved_solids" => ['required', 'numeric', 'min:0'],
