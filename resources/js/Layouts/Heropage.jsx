@@ -117,7 +117,7 @@ export default function Hero(auth) {
                 <h1 className="text-4xl font-bold leading-tight text-gray-900 sm:text-5xl sm:leading-tight lg:leading-tight lg:text-6xl">A Monitored Water Sites Quality</h1>
                 <p className="mt-2 text-lg text-gray-600 sm:mt-8">The integration of GIS functionalities into the system will enable the mapping of water quality data, providing users with the ability to observe the spatial distribution of parameters such as turbidity and pH at various monitored water sites. </p>
 
-                <Button onClick={() => router.get('/spatial')} className="bg-blue-500 lg:p-8 lg:text-xl sm:text-sm mt-6 focus:outline-none focus:bg-blue-600 hover:bg-blue-600">
+                <Button onClick={() => router.get('/spatial')} className="bg-blue-500 p-8 lg:p-8 text-xl  sm:px-8 sm: mt-6 focus:outline-none focus:bg-blue-600 hover:bg-blue-600">
                   View Water Sites
                   <ArrowRight />
                 </Button>
