@@ -19,8 +19,12 @@ import { Separator } from "@/Components/ui/separator";
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   useEffect(() => {
     if (success) {
-      toast.success(success, {
-        description: "The site has been successfully updated.",
+      const { message, type } = success;
+
+      toast.success(message, {
+        description: type === "create"
+          ? "A new site has been successfully created."
+          : "The site has been successfully updated.",
       });
     }
   }, [success]);
