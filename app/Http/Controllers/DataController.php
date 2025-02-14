@@ -142,19 +142,32 @@ class DataController extends Controller
      */
     public function store(StoreSitesRequest $request)
     {
-        //$data = $request->validated();
+
+        // Debug log to check incoming data
+        Log::info('Received data: ', $request->validated());
+
+        // Check if the name already exists
+        if (Sites::where('name', $request->name)->exists()) {
+            return redirect()->back()->withErrors([
+                'name' => 'The site name has already been taken.'
+            ])->withInput();
+        }
 
         // Create a new site instance
         $data = new Sites($request->validated());
+
         // Calculate the status
         $data->status = $data->calculateWaterStatus();
 
         $data->save();
         //Sites::create($data);
+        // Debug log to confirm save
+        Log::info('Site saved successfully: ', $data->toArray());
 
-
-        return to_route('sitesdata.index')
-        ->with('success', 'Site was added');;
+        return redirect()->route('sitesdata.store')->with('success',[
+            'message' => "Site \"{$data->name}\" was successfully added.",
+            'type' => 'create'
+        ]);;
     }
 
     /**
@@ -182,15 +195,25 @@ class DataController extends Controller
      */
     public function update(UpdateSitesRequest $request, Sites $sitesdatum)
     {
-        $data = $request->validated();
 
+
+        $data = $request->validated();
+        // Check if the name already exists but exclude the current record
+        if (Sites::where('name', $data['name'])->where('id', '!=', $sitesdatum->id)->exists()) {
+        return redirect()->back()->withErrors([
+            'name' => 'The site name has already been taken.'
+        ])->withInput();
+        }
         $tempSite = new Sites($data);
         $data['status'] = $tempSite->calculateWaterStatus();
         $name = $sitesdatum->name;
         $sitesdatum->update($data);
 
         return to_route('sitesdata.index')
-        ->with('success', "Site \"$name\" was updated");;
+        ->with('success',  [
+            'message' => "Site \"{$name}\" was successfully updated.",
+            'type' => 'update'
+        ]);;
     }
 
     /**
