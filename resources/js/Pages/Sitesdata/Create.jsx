@@ -1,25 +1,89 @@
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
-import SelectInput from "@/Components/SelectInput";
+
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { useEffect, useRef } from "react";
+import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/Components/ui/card";
+import { Separator } from "@/Components/ui/separator";
+import { Button } from "@/Components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form";
+import InputLabel from "@/Components/InputLabel";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/Components/ui/select";
+
+
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  ph_level: z.number().min(0, "pH Level must be positive"),
+  turbidity: z.number().min(0, "Turbidity must be positive"),
+  total_dissolved_solids: z.number().min(0, "TDS must be positive"),
+  total_hardness: z.number().min(0, "Total Hardness must be positive"),
+  salinity: z.number().min(0, "Salinity must be positive"),
+  nitrate: z.number().min(0, "Nitrate must be positive"),
+  sulfate: z.number().min(0, "Sulfate must be positive"),
+  latitude: z.number().min(-90).max(90, "Invalid latitude"),
+  longitude: z.number().min(-180).max(180, "Invalid longitude"),
+  active_status: z.string().min(1, "Active status is required"),
+  address: z.string().min(1, "Address is required"),
+});
 
 export default function Create({ auth }) {
-  const { data, setData, post, errors, reset } = useForm({
-    name: "",
-    ph_level: "",
-    turbidity: "",
-    total_dissolved_solids: "",
-    total_hardness: "",
-    salinity: "",
-    nitrate: "",
-    sulfate: "",
-    latitude: "",
-    longitude: "",
-    active_status: "",
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      ph_level: "",
+      turbidity: "",
+      total_dissolved_solids: "",
+      total_hardness: "",
+      salinity: "",
+      nitrate: "",
+      sulfate: "",
+      latitude: "",
+      longitude: "",
+      active_status: "",
+      address: "",
+
+    },
   });
+
+  const {
+    register,
+    setValue,  //  Use this to update latitude & longitude dynamically
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      latitude: 6.738, // Default location
+      longitude: 125.368,
+    },
+  });
+
+  const onSubmit = (data) => {
+    // Use route('sitesdata.store') instead of hardcoded path
+    console.log(data);
+    router.post(route('sitesdata.store'), data, {
+      onError: (errors) => {
+        console.error("Error occurred:", errors);
+        Object.keys(errors).forEach((field) => {
+          form.setError(field, { type: "manual", message: errors[field] });
+        });
+      },
+      onSuccess: () => {
+        form.reset();
+      },
+    });
+  };
+
+  const handleCancel = (e) => {
+    e.preventDefault();
+    form.reset();
+    router.get(route("sitesdata.index")); // Navigate without submitting
+  };
 
   const refs = {
     name: useRef(null),
@@ -32,6 +96,7 @@ export default function Create({ auth }) {
     sulfate: useRef(null),
     latitude: useRef(null),
     longitude: useRef(null),
+    address: useRef(null),
   };
 
   const handleKeyDown = (e, field) => {
@@ -46,14 +111,10 @@ export default function Create({ auth }) {
     }
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    post(route("sitesdata.store"));
-  };
 
   const mapRef = useRef(null);
 
+  // GOOGLE MAP
   useEffect(() => {
     const initMap = () => {
       const map = new google.maps.Map(mapRef.current, {
@@ -71,16 +132,16 @@ export default function Create({ auth }) {
       // Update latitude and longitude on marker drag
       marker.addListener("dragend", (event) => {
         const { lat, lng } = event.latLng.toJSON();
-        setData("latitude", lat);
-        setData("longitude", lng);
+        form.setValue("latitude", lat);  //  Update FormField
+        form.setValue("longitude", lng);
       });
 
       // Update marker position on map click
       map.addListener("click", (event) => {
         const { lat, lng } = event.latLng.toJSON();
-        setData("latitude", lat);
-        setData("longitude", lng);
-        marker.setPosition(event.latLng);
+        form.setValue("latitude", lat);
+        form.setValue("longitude", lng);
+        marker.setPosition(event.latLng); // Move marker
       });
     };
 
@@ -96,7 +157,7 @@ export default function Create({ auth }) {
     return () => {
       delete window.initMap;
     };
-  }, []);
+  }, [setValue]);
 
   return (
     <AuthenticatedLayout
@@ -111,176 +172,272 @@ export default function Create({ auth }) {
     >
       <Head title="Water Quality" />
 
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-            <form
-              onSubmit={onSubmit}
-              className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
-            >
+      <Card className="m-6 lg:px-6 pt-6 sm:px-2">
+        <div className="py-2">
+
+          <CardTitle className="flex-nowrap space-y-1 mb-1 px-6">Add new Water Sites</CardTitle>
+          <CardDescription className="flex-nowrap space-y-1 mb-1 px-6">Fill required water quality information</CardDescription>
+        </div>
+        <Separator />
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 bg-white dark:bg-gray-800 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <InputLabel htmlFor="name" value="Name (e.g., Sample Location)" />
-                  <TextInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={data.name}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("name", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "name")}
-                    ref={refs.name}
-                  />
-                  <InputError message={errors.name} className="mt-2" />
-                </div>
+                {/* Name */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name (e.g., Sample Location)</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Active Status */}
+                <FormField
+                  control={form.control}
+                  name="active_status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Active Status</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            form.clearErrors("active_status");
+                          }}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="Inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <div>
-                  <InputLabel htmlFor="ph_level" value="pH Level (e.g., 7.0 - Neutral)" />
-                  <TextInput
-                    id="ph_level"
-                    type="number"
-                    step="1"
-                    name="ph_level"
-                    value={data.ph_level}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("ph_level", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "ph_level")}
-                    ref={refs.ph_level}
-                  />
-                  <InputError message={errors.ph_level} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="turbidity" value="Turbidity (NTU - e.g., 3.06)" />
-                  <TextInput
-                    id="turbidity"
-                    type="number"
-                    step="0.01"
-                    name="turbidity"
-                    value={data.turbidity}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("turbidity", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "turbidity")}
-                    ref={refs.turbidity}
-                  />
-                  <InputError message={errors.turbidity} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel
-                    htmlFor="total_dissolved_solids"
-                    value="Total Dissolved Solids (mg/L - e.g., 19.04)"
-                  />
-                  <TextInput
-                    id="total_dissolved_solids"
-                    type="number"
-                    name="total_dissolved_solids"
-                    value={data.total_dissolved_solids}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("total_dissolved_solids", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "total_dissolved_solids")}
-                    ref={refs.total_dissolved_solids}
-                  />
-                  <InputError
-                    message={errors.total_dissolved_solids}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="total_hardness" value="Total Hardness (mg/L - e.g., 150)" />
-                  <TextInput
-                    id="total_hardness"
-                    type="number"
-                    name="total_hardness"
-                    value={data.total_hardness}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("total_hardness", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "total_hardness")}
-                    ref={refs.total_hardness}
-                  />
-                  <InputError
-                    message={errors.total_hardness}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="salinity" value="Salinity (% - e.g., 0.5)" />
-                  <TextInput
-                    id="salinity"
-                    type="number"
-                    name="salinity"
-                    value={data.salinity}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("salinity", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "salinity")}
-                    ref={refs.salinity}
-                  />
-                  <InputError message={errors.salinity} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="nitrate" value="Nitrate (mg/L - e.g., 10)" />
-                  <TextInput
-                    id="nitrate"
-                    type="number"
-                    name="nitrate"
-                    value={data.nitrate}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("nitrate", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "nitrate")}
-                    ref={refs.nitrate}
-                  />
-                  <InputError message={errors.nitrate} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="sulfate" value="Sulfate (mg/L - e.g., 25)" />
-                  <TextInput
-                    id="sulfate"
-                    type="number"
-                    name="sulfate"
-                    value={data.sulfate}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("sulfate", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "sulfate")}
-                    ref={refs.sulfate}
-                  />
-                  <InputError message={errors.sulfate} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="latitude" value="Latitude (e.g., 34.052235)" />
-                  <TextInput
-                    id="latitude"
-                    type="number"
-                    step="0.000001"
-                    name="latitude"
-                    value={data.latitude}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("latitude", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "latitude")}
-                    ref={refs.latitude}
-                  />
-                  <InputError message={errors.latitude} className="mt-2" />
-                </div>
-
-                <div>
-                  <InputLabel htmlFor="longitude" value="Longitude (e.g., -118.243683)" />
-                  <TextInput
-                    id="longitude"
-                    type="number"
-                    step="0.000001"
-                    name="longitude"
-                    value={data.longitude}
-                    className="mt-1 block w-full"
-                    onChange={(e) => setData("longitude", e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, "longitude")}
-                    ref={refs.longitude}
-                  />
-                  <InputError message={errors.longitude} className="mt-2" />
-                </div>
+                {/* ph Level */}
+                <FormField
+                  control={form.control}
+                  name="ph_level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>pH Level (e.g., 7.0 - Neutral)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="1" {...field} placeholder="Enter pH level"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("ph_level"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "ph_level")}
+                          ref={refs.ph_level}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* turbidity */}
+                <FormField
+                  control={form.control}
+                  name="turbidity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Turbidity (NTU - e.g., 3.06)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} placeholder="Enter turbidity"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("turbidity"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "turbidity")}
+                          ref={refs.turbidity}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* TDS */}
+                <FormField
+                  control={form.control}
+                  name="total_dissolved_solids"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Dissolved Solids (mg/L - e.g., 19.04)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} placeholder="Enter total dissolved solids"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("total_dissolved_solids"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "total_dissolved_solids")}
+                          ref={refs.total_dissolved_solids}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Total Hardness */}
+                <FormField
+                  control={form.control}
+                  name="total_hardness"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Hardness (mg/L - e.g., 150)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} placeholder="Enter total hardness"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("total_hardness"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "total_hardness")}
+                          ref={refs.total_hardness}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Salinity */}
+                <FormField
+                  control={form.control}
+                  name="salinity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salinity (% - e.g., 0.5)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} placeholder="Enter salinity"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("salinity"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "salinity")}
+                          ref={refs.salinity}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Nitrate */}
+                <FormField
+                  control={form.control}
+                  name="nitrate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nitrate (mg/L - e.g., 10)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} placeholder="Enter nitrate"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("nitrate"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "nitrate")}
+                          ref={refs.nitrate}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Sulfate */}
+                <FormField
+                  control={form.control}
+                  name="sulfate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sulfate (mg/L - e.g., 25)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} placeholder="Enter sulfate"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("sulfate"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "sulfate")}
+                          ref={refs.sulfate}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Address */}
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter address" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Latitude */}
+                <FormField
+                  control={form.control}
+                  name="latitude"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Latitude (e.g., 34.052235)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.000001" {...field} placeholder="Enter latitude"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("latitude"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "latitude")}
+                          ref={refs.latitude}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Longitude */}
+                <FormField
+                  control={form.control}
+                  name="longitude"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Longitude (e.g., -118.243683)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.000001" {...field} placeholder="Enter longitude"
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value); // Ensure it's a number
+                            field.onChange(value);
+                            form.clearErrors("longitude"); // 🔥 Clear error when user types
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, "longitude")}
+                          ref={refs.longitude}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Google Maps Integration */}
@@ -291,20 +448,25 @@ export default function Create({ auth }) {
                   className="w-full h-80 border rounded"
                 ></div>
               </div>
-
-
-              <div className="mt-4 text-right">
-                <Link
-                  href={route("sitesdata.index")}
-                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
-                >
+              <Separator className="my-6" />
+              <div className="mt-6 text-right">
+                <Button type="button" variant="outline" onClick={handleCancel} className="mr-4 px-8 py-6 text-md">
                   Cancel
-                </Link>
-                <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
-                  Submit
-                </button>
+                </Button>
+                <Button type="submit" className="px-8 py-6 text-md">Submit</Button>
               </div>
             </form>
+
+          </Form>
+
+
+        </CardContent>
+      </Card>
+
+      <div className="py-12">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+
           </div>
         </div>
       </div>
