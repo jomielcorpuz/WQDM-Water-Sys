@@ -30,6 +30,12 @@ class DataController extends Controller
         $query = Sites::query();
 
 
+
+        //For archived feature, separate active and archived --NOT YET IMPLEMENTED
+        $activeSites = Sites::whereNull('deleted_at')->get();
+        $archivedSites = Sites::onlyTrashed()->get();
+
+        //For sorting in table
         $sortField = request("sort_field", 'id');
         $sortDirection = request("sort_direction", "asc");
 
@@ -225,6 +231,20 @@ class DataController extends Controller
 
         $name = $sitesdatum->name;
         $sitesdatum->delete();
-        return to_route('sitesdata.index')->with('success', "Site \"$name\" was deleted");
+        return to_route('sitesdata.index')->with('success', [
+            'message' => "Site \"{$name}\" was successfully deleted.",
+            'type' => 'delete'
+        ]);;
+    }
+
+    public function restore($id)
+    {
+        $site = Sites::withTrashed()->findOrFail($id);
+        $site->restore();
+
+        return to_route('sitesdata.index')->with('success', [
+            'message' => "Site \"{$site->name}\" was successfully restored.",
+            'type' => 'restore'
+        ]);;
     }
 }
