@@ -38,7 +38,7 @@ export default function Dashboard({ summaryData }) {
 
 
       <div className="py-12 px-6 grid lg:grid-cols-3 sm:grid-cols-1 gap-6">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 justify center items-center w-full">
           <MainChart />
         </Card>
         <Card>
