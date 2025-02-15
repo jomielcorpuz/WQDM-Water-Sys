@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useEffect, useState } from "react"
+import { Loader } from "lucide-react"
+import { MainchartSkeletonCard } from "./mainchartskeleton"
 
 // Define chart configuration
 const chartConfig = {
@@ -76,7 +78,7 @@ export default function MainChart() {
   const filteredData = filterDataByDate(chartData, activeFilter)
 
   // Error and loading state handling
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className=" w-[100%] h-full justify-center"><MainchartSkeletonCard /></p>
   if (error) return <p>Error: {error}</p>
   if (!filteredData.length) return <p>No data available</p>
 
@@ -105,8 +107,8 @@ export default function MainChart() {
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig} className="aspect-auto lg:h-[300px] md:h-[250px]  w-full">
-          <AreaChart data={filteredData}>
+        <ChartContainer config={chartConfig} className="aspect-0 h-full lg:h-[300px] md:h-[250px]  w-full">
+          <AreaChart className="aspect-0 lg:h-[300px] md:h-[250px]  h-full w-full" data={filteredData}>
             <defs>
               <linearGradient id="fillnonpotable" x1="0" y1="0" x2="0" y2="1">
                 <stop
