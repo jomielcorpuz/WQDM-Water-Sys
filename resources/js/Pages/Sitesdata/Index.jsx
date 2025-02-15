@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
 import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
 import { Button } from "@/Components/ui/button";
-import { FilePenLine, Trash2 } from "lucide-react";
+import { FilePenLine, Plus, Trash2, Upload } from "lucide-react";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
@@ -143,21 +143,25 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <div className="flex justify-between items-center">
+        <div className="lg:flex md:flex xl:flex space-y-2 justify-between items-center">
           <h2 className="font-semibold text-xl text-black">Sites</h2>
-          <div className="space-x-4">
+          <div className="flex space-x-4 justify-center items-center ">
             <Button
-              onClick={() => router.visit(route("sitesdata.create"))}
-              className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
-            >
-              Add new
-            </Button>
-            <Button
+              variant="outline"
               onClick={() => router.visit(route("sitesdata.batchupload"))}
-              className="bg-blue-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-blue-600"
+              className=" lg:px-6 lg:py-5 md:px-6 md:py-5 transition-all hover:bg-blue-600 hover:text-white"
             >
+              <Upload />
               Upload CSV
             </Button>
+            <Button
+              onClick={() => router.visit(route("sitesdata.create"))}
+              className="bg-blue-500 text-white lg:px-6 lg:py-5 md:px-6 md:py-5  transition-all hover:bg-blue-600"
+            >
+              <Plus className="text-white" />
+              Add New Sites
+            </Button>
+
           </div>
         </div>
       }
@@ -301,7 +305,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                     <td className="px-3 py-2 text-nowrap justify-end flex">
                       <Button
 
-                        className="font-medium text-white py-2 px-2  mx-1 rounded-sm bg-blue-500 hover:bg-blue-600"
+                        className=" text-white py-2 px-2  mx-1 rounded-sm bg-blue-500 hover:bg-blue-600"
                         onClick={() => handleEditClick(sites)}
                       >
                         <FilePenLine />

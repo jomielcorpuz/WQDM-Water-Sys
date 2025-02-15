@@ -34,14 +34,14 @@ export default function FrontLayout({ header, children }) {
                 Home
               </NavLink>
               <NavLink
-                href={route('sitesdata.index')}
-                active={route().current('sitesdata.index')}
+                href={route('welcome')}
+                active={route().current('welcome')}
               >
                 About
               </NavLink>
               <NavLink
-                href={route('spatialviews.index')}
-                active={route().current('spatialviews.index')}
+                href={route('welcome')}
+                active={route().current('welcome')}
               >
                 Contact
               </NavLink>
@@ -102,20 +102,20 @@ export default function FrontLayout({ header, children }) {
         >
           <div className="space-y-1 pb-3 pt-2">
             <ResponsiveNavLink
-              href={route('dashboard')}
-              active={route().current('dashboard')}
+              href={route('welcome')}
+              active={route().current('welcome')}
             >
               Home
             </ResponsiveNavLink>
             <ResponsiveNavLink
-              href={route('sitesdata.index')}
-              active={route().current('sitesdata.index')}
+              href={route('welcome')}
+              active={route().current('welcome')}
             >
               About
             </ResponsiveNavLink>
             <ResponsiveNavLink
-              href={route('spatialviews.index')}
-              active={route().current('spatialviews.index')}
+              href={route('welcome')}
+              active={route().current('welcome')}
             >
               Contact
             </ResponsiveNavLink>

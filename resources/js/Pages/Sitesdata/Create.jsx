@@ -450,10 +450,10 @@ export default function Create({ auth }) {
               </div>
               <Separator className="my-6" />
               <div className="mt-6 text-right">
-                <Button type="button" variant="outline" onClick={handleCancel} className="mr-4 px-8 py-6 text-md">
+                <Button type="button" variant="outline" onClick={handleCancel} className="mr-4  px-6 text-md py-4">
                   Cancel
                 </Button>
-                <Button type="submit" className="px-8 py-6 text-md">Submit</Button>
+                <Button type="submit" className="px-6 py-4 text-md">Submit</Button>
               </div>
             </form>
 
