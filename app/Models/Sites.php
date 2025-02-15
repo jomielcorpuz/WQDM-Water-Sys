@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -13,7 +14,10 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 class Sites extends Model
 {
     /** @use HasFactory<\Database\Factories\SitesFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+
+
 
    // protected $table = 'sites';
 
@@ -31,7 +35,10 @@ class Sites extends Model
         'longitude',
         'status',
         'active_status',
+        'address',
     ];
+
+    protected $dates = ['deleted_at'];
 
     // Define any custom casts for specific attributes
     protected $casts = [
