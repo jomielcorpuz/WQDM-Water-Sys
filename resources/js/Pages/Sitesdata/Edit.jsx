@@ -69,26 +69,29 @@ export default function Edit({ auth }) {
   };
 
   const mapRef = useRef(null);
-
   useEffect(() => {
     const initMap = () => {
+      // Convert lat & lng to numbers
+      const latitude = parseFloat(data.latitude);
+      const longitude = parseFloat(data.longitude);
+
       // Check if latitude and longitude are valid numbers
       const isValidLatLng =
-        typeof data.latitude === "number" &&
-        typeof data.longitude === "number" &&
-        !isNaN(data.latitude) &&
-        !isNaN(data.longitude);
+        !isNaN(latitude) && !isNaN(longitude);
 
-      const center = isValidLatLng ?
-        { lat: data.latitude, lng: data.longitude } :
-        { lat: 6.7361159998675095, lng: 125.38093326810893 }; // Default location
+      console.log("Latitude:", latitude, "Longitude:", longitude);
+
+      const center = isValidLatLng
+        ? { lat: latitude, lng: longitude }
+        : { lat: 6.7361159998675095, lng: 125.38093326810893 }; // Default location
+
       const map = new google.maps.Map(mapRef.current, {
         center,
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.HYBRID,
       });
 
-      //marker
+      // Marker
       const marker = new google.maps.Marker({
         position: center,
         map,
@@ -98,15 +101,15 @@ export default function Edit({ auth }) {
       // Update latitude and longitude on marker drag
       marker.addListener("dragend", (event) => {
         const { lat, lng } = event.latLng.toJSON();
-        setData("latitude", lat);
-        setData("longitude", lng);
+        setData("latitude", lat.toFixed(7)); // Keep precision
+        setData("longitude", lng.toFixed(7));
       });
 
       // Update marker position on map click
       map.addListener("click", (event) => {
         const { lat, lng } = event.latLng.toJSON();
-        setData("latitude", lat);
-        setData("longitude", lng);
+        setData("latitude", lat.toFixed(7));
+        setData("longitude", lng.toFixed(7));
         marker.setPosition(event.latLng);
       });
     };
@@ -123,8 +126,7 @@ export default function Edit({ auth }) {
     return () => {
       delete window.initMap;
     };
-  }, []);
-
+  }, [data.latitude, data.longitude]);
   return (
     <AuthenticatedLayout
       user={auth.user}
