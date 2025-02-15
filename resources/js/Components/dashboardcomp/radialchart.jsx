@@ -89,7 +89,7 @@ export default function RadialChart() {
         <ChartContainer
           id="pie-interactive"
           config={chartConfig}
-          className="aspect-auto aspect-0 w-full lg:h-[250px] md:h-[250px] sm:h-[250px]"
+          className="aspect-0 w-full h-full lg:h-[250px] md:h-[250px] "
         >
           <PieChart>
             <ChartTooltip
@@ -139,26 +139,33 @@ export default function RadialChart() {
           </PieChart>
 
         </ChartContainer>
-        <Separator />
-        <div className="flex justify-between items-center mt-2  ">
-          <div className="flex items-center mb-2">
-            {/* Use inline-block to prevent expansion */}
-            <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.potable.color }} />
-            <span className="text-sm ml-2">{chartConfig.potable.label}</span>
-          </div>
-          <div><p className="text-sm">{totalPotable}</p></div>
-        </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            {/* Use inline-block to prevent expansion */}
-            <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.nonpotable.color }} />
-            <span className="text-sm ml-2">{chartConfig.nonpotable.label}</span>
-          </div>
-          <div><p className="text-sm">{totalNonPotable}</p></div>
-        </div>
 
       </CardContent>
+      <Separator />
+      <CardFooter className="">
+
+        <div className="flex flex-col w-full">
+
+          <div className="flex justify-between  mt-2  ">
+            <div className="flex items-center mb-2">
+              {/* Use inline-block to prevent expansion */}
+              <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.potable.color }} />
+              <span className="text-sm ml-2">{chartConfig.potable.label}</span>
+            </div>
+            <div><p className="text-sm">{totalPotable}</p></div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              {/* Use inline-block to prevent expansion */}
+              <CircleSmall className="h-5 w-5 inline-block" style={{ color: chartConfig.nonpotable.color }} />
+              <span className="text-sm ml-2">{chartConfig.nonpotable.label}</span>
+            </div>
+            <div><p className="text-sm">{totalNonPotable}</p></div>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   )
 }
