@@ -78,7 +78,7 @@ export default function MainChart() {
   const filteredData = filterDataByDate(chartData, activeFilter)
 
   // Error and loading state handling
-  if (loading) return <p className=" w-[100%] h-full justify-center"><MainchartSkeletonCard /></p>
+  if (loading) return <div className=" w-[100%] h-full justify-center"><MainchartSkeletonCard /></div>
   if (error) return <p>Error: {error}</p>
   if (!filteredData.length) return <p>No data available</p>
 
