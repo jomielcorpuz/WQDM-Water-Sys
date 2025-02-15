@@ -19,15 +19,19 @@ import { Separator } from "@/Components/ui/separator";
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   useEffect(() => {
     if (success) {
-      const { message, type } = success;
-
-      toast.success(message, {
-        description: type === "create"
-          ? "A new site has been successfully created."
-          : "The site has been successfully updated.",
+      toast.success(success.message, {
+        description:
+          success.type === "create"
+            ? "The site has been successfully added."
+            : success.type === "update"
+              ? "The site has been successfully updated."
+              : success.type === "delete"
+                ? "The site has been deleted."
+                : "The site has been restored.",
       });
     }
   }, [success]);
+
 
   const [selectedSites, setSelectedSites] = useState([]);
 
