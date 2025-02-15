@@ -16,11 +16,14 @@ const getColor = (val) => {
 
 
 export function TurbidityChart({ turbidity = 0 }) {
+  const filledValue = Math.min(turbidity, MAX_Value); // Ensure it never exceeds MAX_Value
+  const remainingValue = Math.max(MAX_Value - turbidity, 0); // Prevent negative values
+
   const data = {
     labels: ["pH Level", "Remaining"],
     datasets: [
       {
-        data: [turbidity, MAX_Value - turbidity],
+        data: [filledValue, remainingValue],
         backgroundColor: [getColor(turbidity), "#e0e0e0"],
         borderWidth: 0,
         cutout: "70%",

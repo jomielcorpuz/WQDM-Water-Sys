@@ -16,11 +16,14 @@ const getColor = (val) => {
 
 
 export function NitrateChart({ nitrate = 0 }) {
+  const filledValue = Math.min(nitrate, MAX_Value); // Ensure it never exceeds MAX_Value
+  const remainingValue = Math.max(MAX_Value - nitrate, 0); // Prevent negative values
+
   const data = {
     labels: ["pH Level", "Remaining"],
     datasets: [
       {
-        data: [nitrate, MAX_Value - nitrate],
+        data: [filledValue, remainingValue],
         backgroundColor: [getColor(nitrate), "#e0e0e0"],
         borderWidth: 0,
         cutout: "70%",

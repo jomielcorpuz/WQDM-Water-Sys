@@ -16,11 +16,14 @@ const getColor = (val) => {
 
 
 export function TotalHardnessChart({ totalhardness = 0 }) {
+  const filledValue = Math.min(totalhardness, MAX_Value); // Ensure it never exceeds MAX_Value
+  const remainingValue = Math.max(MAX_Value - totalhardness, 0); // Prevent negative values
+
   const data = {
     labels: ["pH Level", "Remaining"],
     datasets: [
       {
-        data: [totalhardness, MAX_Value - totalhardness],
+        data: [filledValue, remainingValue],
         backgroundColor: [getColor(totalhardness), "#e0e0e0"],
         borderWidth: 0,
         cutout: "70%",

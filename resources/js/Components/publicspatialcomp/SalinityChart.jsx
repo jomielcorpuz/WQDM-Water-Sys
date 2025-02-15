@@ -16,11 +16,14 @@ const getColor = (val) => {
 
 
 export function SalinityChart({ salinity = 0 }) {
+  const filledValue = Math.min(salinity, MAX_Value); // Ensure it never exceeds MAX_Value
+  const remainingValue = Math.max(MAX_Value - salinity, 0); // Prevent negative values
+
   const data = {
     labels: ["pH Level", "Remaining"],
     datasets: [
       {
-        data: [salinity, MAX_Value - salinity],
+        data: [filledValue, remainingValue],
         backgroundColor: [getColor(salinity), "#e0e0e0"],
         borderWidth: 0,
         cutout: "70%",
