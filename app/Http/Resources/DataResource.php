@@ -26,6 +26,7 @@ class DataResource extends JsonResource
             'longitude'=> $this->longitude,
             'status'=> $this->status,
             'active_status'=> $this->active_status,
+            'address'=> $this->address,
         ];
     }
 }
