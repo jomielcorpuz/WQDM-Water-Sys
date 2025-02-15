@@ -103,7 +103,7 @@ export default function Spatial() {
     markers.current.forEach(marker => marker.setMap(null));
     markers.current = [];
 
-    const geocoder = new google.maps.Geocoder();
+
     filteredData.forEach(data => {
       const marker = new google.maps.Marker({
         position: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) },
@@ -131,23 +131,10 @@ export default function Spatial() {
         setSelectedMarkerData(data);
         infoWindow.open(map, marker);
 
-        geocoder.geocode(
-          { location: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) } },
-          (results, status) => {
-            if (status === "OK" && results[0]) {
-              setSelectedAddress(results[0].formatted_address);
-            }
-            else {
-              console.error("Geocoder failed due to: ", status);
-              setSelectedAddress("Address not found.");
-            }
-          }
-        );
       });
     });
   }, [filteredData, map]);
 
-  //GOOGLE MAP API KEY = AIzaSyDf4-glzKgqzlRro_kOgsljGjPF9z1Y-_o
 
   // Handle select change for filtering data
   const handleSelectChange = (value) => {
@@ -286,7 +273,7 @@ export default function Spatial() {
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Address</TableCell>
-                  <TableCell>{currentAddress}</TableCell>
+                  <TableCell>{currentMarkerData.address}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
