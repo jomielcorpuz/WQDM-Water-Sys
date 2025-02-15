@@ -33,6 +33,7 @@ class UpdateSitesRequest extends FormRequest
             "active_status" => ['required', 'string', 'max:255'],
             "latitude" => ['required', 'numeric', 'between:-90,90'],
             "longitude" => ['required', 'numeric', 'between:-180,180'],
+            "address" => ['required', 'string', 'max:255'],
         ];
     }
 }

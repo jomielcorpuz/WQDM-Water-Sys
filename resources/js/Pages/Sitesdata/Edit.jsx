@@ -29,6 +29,7 @@ export default function Edit({ auth }) {
     latitude: sites.latitude || "",
     longitude: sites.longitude || "",
     active_status: sites.active_status || "",
+    address: sites.address || "",
     _method: "PUT",
   });
 
@@ -43,6 +44,7 @@ export default function Edit({ auth }) {
     sulfate: useRef(null),
     latitude: useRef(null),
     longitude: useRef(null),
+    address: useRef(null),
   };
 
   const handleKeyDown = (e, field) => {
@@ -325,6 +327,20 @@ export default function Edit({ auth }) {
                   ref={refs.longitude}
                 />
                 <InputError message={errors.longitude} className="mt-2" />
+              </div>
+              <div className="lg:col-span-3 ">
+                <InputLabel htmlFor="address" value="Address" />
+                <TextInput
+                  id="address"
+                  type="text"
+                  name="address"
+                  value={data.address}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("address", e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, "address")}
+                  ref={refs.address}
+                />
+                <InputError message={errors.address} className="mt-2" />
               </div>
 
 
