@@ -30,16 +30,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Resource routes for DataController
     Route::resource('sitesdata', DataController::class);
+    Route::get('sitesdata/create', [DataController::class, 'create'])->name('sitesdata.create');
+    Route::post('sitesdata', [DataController::class, 'store'])->name('sitesdata.store');
 
     Route::resource('spatialviews', SpatialviewsController::class);
-
+    //CSV Upload routes
     Route::get('/batchupload', [Datacontroller::class, 'showBatchUploadForm'])->name('sitesdata.batchupload');
     Route::post('/batchupload', [DataController::class, 'handleBatchUpload'])->name('sitesdata.batchupload');
     Route::get('/sitesdata/index', [DataController::class, 'sitesExport'])
     ->name('sitesdata.export');
 
-    Route::get('sitesdata/create', [DataController::class, 'create'])->name('sitesdata.create');
-    Route::post('sitesdata', [DataController::class, 'store'])->name('sitesdata.store');
 
 });
 
