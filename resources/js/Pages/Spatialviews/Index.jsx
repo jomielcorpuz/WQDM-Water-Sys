@@ -1,12 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import SelectInput from "@/Components/SelectInput";
 import Paginatedata from "@/Components/Paginatedata";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { PieChart, Pie, Label } from "recharts";
-
+import { Skeleton } from "@/Components/ui/skeleton";
+import { Loader } from "lucide-react";
+import Pagination from "@/Components/Pagination";
+import TableHeading from "@/Components/TableHeading";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
+import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
+import { Button } from "@/Components/ui/button";
 
 const chartConfig = {
   potable: {
@@ -193,6 +208,29 @@ export default function Index({ auth }) {
     );
   };
 
+  const defaultMarkerData = {
+    name: "No Marker Selected",
+    address: "No address available",
+  };
+  const currentMarkerData = selectedMarkerData || defaultMarkerData;
+
+  //Update selected markerdata
+  const handleEditClick = () => {
+    if (!selectedMarkerData) {
+      console.error("No site selected");
+      return;
+    }
+
+    const redirectRoute = route("spatialviews.index");
+    console.log(`Editing site: ${selectedMarkerData.name} (ID: ${selectedMarkerData.id}), Redirect to: ${redirectRoute}`);
+
+    router.get(route("sitesdata.edit", {
+      sitesdatum: selectedMarkerData.id,
+      redirect: redirectRoute
+    }));
+  };
+
+
 
   return (
     <AuthenticatedLayout
@@ -201,71 +239,107 @@ export default function Index({ auth }) {
         <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
           Spatial Distribution
         </h2>
-      }
-    >
+      }>
       <Head title="Spatial Distribution" />
-
-      <div className="p-6 grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
-        <Card className="lg:col-span-2">
+      <div className="flex-col">
+        <div className="p-6 grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
           {/* Map section */}
-          <div className="p-4 sm:px-6 lg:px-8bg-white dark:bg-gray-800">
-
-            <div className="flex flex-wrap justify-between items-center ">
-              <h1 className="text-xl font-semibold mt-1"> Water Sites Map</h1>
-
-              <Select value={selectedStatus || undefined} onValueChange={handleSelectChange}>
-                <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                  <SelectValue placeholder="Filter" />
-                </SelectTrigger>
-                <SelectContent align="end" className="rounded-xl">
-                  <SelectItem value="all" className="rounded-lg">All</SelectItem>
-                  <SelectItem value="Potable" className="rounded-lg">Potable</SelectItem>
-                  <SelectItem value="Non-potable" className="rounded-lg">Non-Potable</SelectItem>
-                </SelectContent>
-              </Select>
-
-            </div>
-
-
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <div className="flex flex-row mt-4">
-                {/* Map  */}
-                <div ref={mapRef} className="w-full h-96 border rounded mb-4"></div>
-
-
+          <Card className="lg:col-span-2">
+            <div className="p-4 sm:px-6 lg:px-8bg-white dark:bg-gray-800">
+              <div className="flex flex-wrap justify-between items-center ">
+                <h1 className="text-xl font-semibold mt-1"> Water Sites Map</h1>
+                <Select value={selectedStatus || undefined} onValueChange={handleSelectChange}>
+                  <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
+                    <SelectValue placeholder="Filter" />
+                  </SelectTrigger>
+                  <SelectContent align="end" className="rounded-xl">
+                    <SelectItem value="all" className="rounded-lg">All</SelectItem>
+                    <SelectItem value="Potable" className="rounded-lg">Potable</SelectItem>
+                    <SelectItem value="Non-potable" className="rounded-lg">Non-Potable</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            )}
+              {loading ? (
+                <div >
+                  <Loader />
+                </div>
+              ) : (
+                <div className="flex flex-row mt-4">
+                  {/* Map  */}
+                  <div ref={mapRef} className="w-full h-96 border rounded mb-4"></div>
+                </div>
+              )}
+            </div>
+          </Card>
+          {/* Summary Card*/}
+          <div className="flex-col space-y-6">
+            {/* Details Section */}
+            <Card className="p-4">
+              <div className="flex justify-end">
+                <Button variant="secondary"
+                  onClick={handleEditClick}
+                  disabled={!selectedMarkerData}>
+                  Update
+                </Button>
+              </div>
+              <Table>
+                <TableCaption>Selected marker details</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Field</TableHead>
+                    <TableHead>Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">Name</TableCell>
+                    <TableCell>{currentMarkerData.name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Status</TableCell>
+                    <TableCell>
+                      <span className={"px-2 py-1 rounded-xl " + ACTIVE_STATUS_CLASS_MAP[currentMarkerData.active_status]}>
+                        {ACTIVE_STATUS_TEXT_MAP[currentMarkerData.active_status]}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Water Condition</TableCell>
+                    <TableCell>
+                      <span className={"px-2 py-1 rounded-xl " + WATER_STATUS_CLASS_MAP[currentMarkerData.status]}>
+                        {WATER_STATUS_TEXT_MAP[currentMarkerData.status]}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+
+                </TableBody>
+              </Table>
+            </Card>
+            {/* Pie Chart */}
+            <Card className="col-span-1">
+              <CardHeader>
+                <div className="grid gap-1">
+                  <CardTitle>Pie Chart</CardTitle>
+                  <CardDescription>Shows total number of filtered sites</CardDescription>
+                </div>
+              </CardHeader>
+              <div className="flex justify-center items-center p-4">
+                {filteredData.length > 0 ? (renderPieChart()) :
+                  (
+                    <Skeleton className="w-[300px] h-[300px] rounded-full" />
+                  )}
+              </div>
+            </Card>
           </div>
-
-        </Card>
-
-        {/* Pie Chart */}
-        <Card className="col-span-1">
+        </div>
+        {/* Table Section */}
+        <Card className="mx-6">
           <CardHeader>
-            <div className="grid gap-1">
-              <CardTitle>Filtered Sites</CardTitle>
-              <CardDescription>Shows total number of filtered sites</CardDescription>
+            <div className="flex">
+              <h1 className="text-2xl font-bold">Sites Reading</h1>
             </div>
           </CardHeader>
-          <div className="flex justify-center items-center p-4">
-            {renderPieChart()}
-          </div>
-        </Card>
-
-      </div>
-      <div className="mx-auto w-full ">
-        <div className="m-4">
-
-
-
-
-          {/* Details Section */}
-          <div className="bg-white mx-auto sm:px-6 lg:px-8  overflow-hidden shadow-sm sm:rounded-lg border rounded lg:rounded-lg ">
-            <div className="flex mt-6 ml-4">
-              <h1 className="text-2xl font-bold mb-4">Sites Reading</h1>
-            </div>
+          <CardContent>
             <div className="p-4 text-gray-900 text-dark-100">
               <div className="overflow-auto">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -274,6 +348,7 @@ export default function Index({ auth }) {
                       <th className="px-3 py-3">ID</th>
                       <th className="px-3 py-3">Name</th>
                       <th className="px-3 py-3">Condition</th>
+                      <th className="px-3 py-3">Status</th>
                       <th className="px-3 py-3">PH Level</th>
                       <th className="px-3 py-3">Salinity</th>
                       <th className="px-3 py-3">Turbidity</th>
@@ -287,6 +362,7 @@ export default function Index({ auth }) {
                         <td className="px-3 py-2">{index + 1}</td>
                         <td className="px-3 py-2">{site.name}</td>
                         <td className="px-3 py-2">{site.status}</td>
+                        <td className="px-3 py-2">{site.active_status}</td>
                         <td className="px-3 py-2">{site.ph_level}</td>
                         <td className="px-3 py-2">{site.salinity}</td>
                         <td className="px-3 py-2">{site.turbidity.toFixed(1)} NTU</td>
@@ -295,18 +371,22 @@ export default function Index({ auth }) {
                       </tr>))}
                   </tbody>
                 </table>
-
               </div>
-              <Paginatedata
-                itemsPerPage={itemsPerPage}
-                totalItems={filteredData.length}
-                paginate={paginate}
-                currentPage={currentPage}
-              />
+              <div className="mt-6">
+                <Paginatedata
+                  itemsPerPage={itemsPerPage}
+                  totalItems={filteredData.length}
+                  paginate={paginate}
+                  currentPage={currentPage}
+                />
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+
+        </Card>
+
       </div>
+
     </AuthenticatedLayout>
   );
 
