@@ -9,7 +9,6 @@ import { Loader } from "lucide-react";
 import { Separator } from '@/Components/ui/separator';
 
 export default function Hero({ auth }) {
-  console.log(auth);
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
