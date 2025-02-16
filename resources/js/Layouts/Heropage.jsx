@@ -2,10 +2,11 @@
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Button } from '@/Components/ui/button';
 import { Link, router } from '@inertiajs/react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, LogIn } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { motion, useSpring } from "framer-motion";
 import { Loader } from "lucide-react";
+import { Separator } from '@/Components/ui/separator';
 
 export default function Hero(auth) {
   console.log(auth.user);
@@ -102,6 +103,13 @@ export default function Hero(auth) {
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Home</a>
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">About</a>
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Contact</a>
+            <Separator />
+            <div>
+
+            </div>
+            <a href="/login" className="flex justify-between block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">
+              Sign in
+            </a>
           </div>
         </div>
 
