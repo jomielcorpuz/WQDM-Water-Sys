@@ -156,7 +156,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
             </Button>
             <Button
               onClick={() => router.visit(route("sitesdata.create"))}
-              className="bg-blue-500 text-white lg:px-6 lg:py-5 md:px-6 md:py-5  transition-all hover:bg-blue-600"
+              className="bg-blue-500 text-white lg:py-5  md:py-5  transition-all hover:bg-blue-600"
             >
               <Plus className="text-white" />
               Add New Sites
@@ -169,7 +169,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
       <Head title="Sites" />
 
-      <Card className="mx-6 my-10 sm:px-6 lg:px-6">
+      <Card className="mx-6 my-10 ">
         <div className="py-6 px-6 text-gray-900 text-dark-100">
           <div className="flex  space-x-6 mb-6">
             <TextInput
@@ -341,12 +341,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
             </div>
 
-            {/* <button
-        onClick={handleExport}
-        className="bg-gray-500 py-2 px-4 text-white rounded shadow transition-all hover:bg-gray-600"
-      >
-        Export Excel
-      </button> */}
+
           </div>
 
         </div>
