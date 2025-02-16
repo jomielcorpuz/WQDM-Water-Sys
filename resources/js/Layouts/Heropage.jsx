@@ -8,8 +8,8 @@ import { motion, useSpring } from "framer-motion";
 import { Loader } from "lucide-react";
 import { Separator } from '@/Components/ui/separator';
 
-export default function Hero(auth) {
-  console.log(auth.user);
+export default function Hero({ auth }) {
+  console.log(auth);
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
@@ -99,17 +99,25 @@ export default function Hero(auth) {
 
         {/* Responsive Nav */}
         <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
+          <div className="block py-2 text-base font-medium text-gray-900 hover:bg-gray-100">
+            {auth.user ? (
+              <Link href={route('dashboard')} className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70">
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href={route('login')} className="ml-4 rounded-md px-3 py-2 text-white bg-blue-500 hover:bg-blue-600 transition">Sign in</Link>
+
+              </>
+            )}
+          </div >
+          <Separator />
           <div className="space-y-1 pb-3 pt-2">
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Home</a>
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">About</a>
             <a href="/welcome" className="block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">Contact</a>
-            <Separator />
-            <div>
 
-            </div>
-            <a href="/login" className="flex justify-between block px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-100">
-              Sign in
-            </a>
+
           </div>
         </div>
 

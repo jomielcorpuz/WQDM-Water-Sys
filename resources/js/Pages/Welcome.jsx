@@ -1,12 +1,12 @@
 import Hero from '@/Layouts/Heropage';
-import Footer from '@/Layouts/NewFooter';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Welcome({ }) {
+export default function Welcome({ auth }) {
+  console.log(auth);
   return (
     <>
       <Head title="Welcome" />
-      <Hero />
+      <Hero auth={auth} />
     </>
   );
 }
