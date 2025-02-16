@@ -16,7 +16,6 @@ export default function Edit({ auth }) {
   const { props } = usePage();
   const { sites } = props;
 
-  console.log(sites);
   const { data, setData, post, errors, reset } = useForm({
     name: sites.name || "",
     ph_level: sites.ph_level || "",
@@ -128,7 +127,7 @@ export default function Edit({ auth }) {
     return () => {
       delete window.initMap;
     };
-  }, [data.latitude, data.longitude]);
+  }, []);
   return (
     <AuthenticatedLayout
       user={auth.user}
