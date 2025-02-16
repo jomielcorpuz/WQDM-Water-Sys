@@ -42,7 +42,7 @@ export function RadialChart({ currentPh = 0 }) {
         <div className="  w-[150px]">
 
           <Doughnut data={data} options={{ plugins: { tooltip: { enabled: false } } }} />
-          <dev className="relative bottom-16">
+          <div className="relative bottom-16">
 
             <div className="flex items-center justify-center text-2xl font-bold text-foreground">
               {formatPh}
@@ -52,7 +52,7 @@ export function RadialChart({ currentPh = 0 }) {
               <div className="text-sm font-bold text-muted-foreground">0</div>
               <div className="text-sm font-bold text-muted-foreground">14</div>
             </div>
-          </dev>
+          </div>
         </div>
       </CardContent>
     </Card>
