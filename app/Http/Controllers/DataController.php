@@ -201,7 +201,7 @@ class DataController extends Controller
      */
     public function update(UpdateSitesRequest $request, Sites $sitesdatum)
     {
-
+        Log::info('Incoming request data:', $request->all()); // Debugging: Log all request data
 
         $data = $request->validated();
         // Check if the name already exists but exclude the current record
@@ -215,11 +215,16 @@ class DataController extends Controller
         $name = $sitesdatum->name;
         $sitesdatum->update($data);
 
-        return to_route('sitesdata.index')
-        ->with('success',  [
-            'message' => "Site \"{$name}\" was successfully updated.",
-            'type' => 'update'
-        ]);;
+        $redirectRoute = $request->input('redirect', 'sitesdata.index'); // Get redirect or fallback
+
+        Log::info('Redirect route:', ['redirect' => $redirectRoute]); // Debugging log
+
+
+       // Use the redirect parameter or fallback to 'sitesdata.index'
+       return to_route($redirectRoute)->with('success', [
+        'message' => "Site \"{$name}\" was successfully updated.",
+        'type' => 'update'
+    ]);
     }
 
     /**
