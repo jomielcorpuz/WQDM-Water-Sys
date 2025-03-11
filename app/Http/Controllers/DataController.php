@@ -49,12 +49,14 @@ class DataController extends Controller
             $query->where("status", request("status"));
         }
           // Handle status filter correctly
-        $status = request("status");
-        if ($status && $status !== "all") { // Apply only if not "all"
-            $query->where("status", $status);
+          if (request("status") && request("status") !== "all") {
+            $query->where("status", request("status"));
         }
 
-        $sites_data_all = $query->orderBy($sortField, $sortDirection)->get();
+         // Get all data for reports
+        $sites_data_all = $query->orderBy("id", "asc")->get();
+
+        // Get paginated data for table display
         $sites_data = $query->orderBy($sortField,$sortDirection)
         ->paginate(10)->onEachSide(1);
 

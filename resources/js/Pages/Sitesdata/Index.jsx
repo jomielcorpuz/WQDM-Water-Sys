@@ -9,12 +9,15 @@ import { useEffect, useState } from "react";
 import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
 import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
 import { Button } from "@/Components/ui/button";
-import { FilePenLine, Plus, Trash2, Upload } from "lucide-react";
+import { ArrowDownToLine, FilePenLine, Plus, Trash2, Upload } from "lucide-react";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Card } from "@/Components/ui/card";
 import { Separator } from "@/Components/ui/separator";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import SitesReportPDF from "./SitesReportPDF";
+import { PDFViewer } from "@react-pdf/renderer";
 
 export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
   useEffect(() => {
@@ -145,6 +148,27 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
     }
   };
 
+  const ExportPDFButton = ({ sites_data_all }) => {
+    return (
+      <PDFDownloadLink
+        document={<SitesReportPDF sites={sites_data_all} />}
+        fileName={`water_quality_report_${new Date().toISOString().replace(/[:.]/g, "-")}.pdf`}
+
+        className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg transition-all hover:bg-blue-600 ease-in-out "
+      >
+        {({ loading }) => (
+          <>
+            <ArrowDownToLine className="w-5 h-5" />
+            {loading ? "Loading PDF..." : "Export Report"}
+          </>
+        )}
+      </PDFDownloadLink>
+    );
+  };
+
+
+
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -177,31 +201,41 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
       <Card className="mx-6 my-10 ">
         <div className="py-6 px-6 text-gray-900 text-dark-100">
-          <div className="flex  space-x-6 mb-6">
-            <TextInput
-              className=""
-              defaultValue={queryParams.name}
-              placeholder="Site Name"
-              onBlur={(e) =>
-                searchFieldChanged("name", e.target.value)
-              }
-              onKeyPress={(e) => onKeyPress("name", e)}
-            />
-            <Select
-              value={queryParams.status || "all"}
-              onValueChange={(value) => searchFieldChanged("status", value)}
-            >
-              <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                <SelectValue placeholder="Filter" />
-              </SelectTrigger>
-              <SelectContent align="end" className="rounded-xl">
-                <SelectItem value="all" className="rounded-lg">All</SelectItem>
-                <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
-                <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
-              </SelectContent>
-            </Select>
 
+          <div className="flex justify-between items-center">
+            <div className="flex  space-x-6 mb-6">
+              <TextInput
+                className=""
+                defaultValue={queryParams.name}
+                placeholder="Site Name"
+                onBlur={(e) =>
+                  searchFieldChanged("name", e.target.value)
+                }
+                onKeyPress={(e) => onKeyPress("name", e)}
+              />
+              <Select
+                value={queryParams.status || "all"}
+                onValueChange={(value) => searchFieldChanged("status", value)}
+              >
+                <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
+                  <SelectValue placeholder="Filter" />
+                </SelectTrigger>
+                <SelectContent align="end" className="rounded-xl">
+                  <SelectItem value="all" className="rounded-lg">All</SelectItem>
+                  <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
+                  <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
+                </SelectContent>
+              </Select>
+
+            </div>
+
+            <div>
+
+              <ExportPDFButton sites_data_all={sites_data_all.data} />
+
+            </div>
           </div>
+
           <div className="overflow-auto border rounded-xl">
             <table className="w-full  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-600 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-200">
