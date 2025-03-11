@@ -39,18 +39,24 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
   console.log(sites_data);
 
 
-  const totalPotable = sites_data_all.data.filter(site => site.status === 'potable').length;
-  const totalNonPotable = sites_data_all.data.filter(site => site.status === 'non-potable').length;
+  const totalPotable = sites_data_all.data.filter(site => site.status === 'Potable').length;
+  const totalNonPotable = sites_data_all.data.filter(site => site.status === 'Non-potable').length;
+
+
 
   const searchFieldChanged = (name, value) => {
-    if (value) {
-      queryParams[name] = value;
+    const newQueryParams = { ...queryParams }; // Create a new object to avoid direct mutation
+
+    if (value && value !== "all") {
+      newQueryParams[name] = value;
     } else {
-      delete queryParams[name];
+      delete newQueryParams[name]; // Remove status if "All" is selected
     }
 
-    router.get(route("sitesdata.index"), queryParams);
+    router.get(route("sitesdata.index"), newQueryParams, { preserveState: true });
   };
+
+
 
   const onKeyPress = (name, e) => {
     if (e.key !== "Enter") return;
@@ -182,17 +188,19 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
               onKeyPress={(e) => onKeyPress("name", e)}
             />
             <Select
-              value={queryParams.status || ""}
+              value={queryParams.status || "all"}
               onValueChange={(value) => searchFieldChanged("status", value)}
             >
               <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                <SelectValue placeholder="Filter " />
+                <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent align="end" className="rounded-xl">
+                <SelectItem value="all" className="rounded-lg">All</SelectItem>
                 <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
                 <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
               </SelectContent>
             </Select>
+
           </div>
           <div className="overflow-auto border rounded-xl">
             <table className="w-full  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

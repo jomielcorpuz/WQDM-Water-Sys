@@ -48,6 +48,11 @@ class DataController extends Controller
         if (request("status")) {
             $query->where("status", request("status"));
         }
+          // Handle status filter correctly
+        $status = request("status");
+        if ($status && $status !== "all") { // Apply only if not "all"
+            $query->where("status", $status);
+        }
 
         $sites_data_all = $query->orderBy($sortField, $sortDirection)->get();
         $sites_data = $query->orderBy($sortField,$sortDirection)
