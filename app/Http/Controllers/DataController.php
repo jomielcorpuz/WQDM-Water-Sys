@@ -29,44 +29,47 @@ class DataController extends Controller
     {
         $query = Sites::query();
 
-
-
-        //For archived feature, separate active and archived --NOT YET IMPLEMENTED
+        // For archived feature, separate active and archived (Not yet implemented)
         $activeSites = Sites::whereNull('deleted_at')->get();
         $archivedSites = Sites::onlyTrashed()->get();
 
-        //For sorting in table
-        $sortField = request("sort_field", 'id');
+        // Sorting in table
+        $sortField = request("sort_field", "id");
         $sortDirection = request("sort_direction", "asc");
 
+        // Apply filters
         if (request("name")) {
             $query->where("name", "like", "%" . request("name") . "%");
         }
         if (request("id")) {
             $query->where("id", request("id"));
         }
-        if (request("status")) {
-            $query->where("status", request("status"));
-        }
-          // Handle status filter correctly
-          if (request("status") && request("status") !== "all") {
+        if (request("status") && request("status") !== "all") {
             $query->where("status", request("status"));
         }
 
-         // Get all data for reports
-        $sites_data_all = $query->orderBy("id", "asc")->get();
+        // Clone query before different sorting
+        $exportQuery = clone $query;
+        $allDataQuery = clone $query;
+        $tableDataQuery = clone $query;
 
-        // Get paginated data for table display
-        $sites_data = $query->orderBy($sortField,$sortDirection)
-        ->paginate(10)->onEachSide(1);
+        // Fixed sorting for reports
+        $sites_data_export = $exportQuery->orderBy("name", "asc")->get();
 
-        return inertia("Sitesdata/Index",[
+        // Sorting for other views based on user selection
+        $sites_data_all = $allDataQuery->orderBy($sortField, $sortDirection)->get();
+        $sites_data = $tableDataQuery->orderBy($sortField, $sortDirection)
+            ->paginate(10)->onEachSide(1);
+
+        return inertia("Sitesdata/Index", [
             "sites_data" => DataResource::collection($sites_data),
             "sites_data_all" => DataResource::collection($sites_data_all),
-            'queryParams' =>request()->query() ?: null,
-            'success' => session('success'),
+            "sites_data_export" => DataResource::collection($sites_data_export),
+            "queryParams" => request()->query() ?: null,
+            "success" => session("success"),
         ]);
     }
+
 
     public function showBatchUploadForm()
     {
