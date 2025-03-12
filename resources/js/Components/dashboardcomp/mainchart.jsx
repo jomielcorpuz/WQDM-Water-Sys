@@ -24,12 +24,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useEffect, useState } from "react"
-import { Loader } from "lucide-react"
+import { ArrowDownToLine, Loader } from "lucide-react"
 import { MainchartSkeletonCard } from "./mainchartskeleton"
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { PDFDownloadLink } from "@react-pdf/renderer"
 import ChartReport from "./ChartReportPDF"
+import { Loader2 } from "lucide-react";
+import jsPDF from "jspdf";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
 
 // Define chart configuration
 const chartConfig = {
@@ -51,20 +56,46 @@ export default function MainChart() {
   const [activeFilter, setActiveFilter] = useState("Last 30 days");
   const chartRef = useRef(null);
   const [chartImage, setChartImage] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
 
-  // Capture the chart as an image
-  const captureChart = async () => {
-    if (chartRef.current) {
-      const canvas = await html2canvas(chartRef.current, {
-        useCORS: true,
-        scale: window.devicePixelRatio, // Improve quality
-        imageTimeout: 15000, // Allow time for images to load
-      });
+  const exportReport = async () => {
+    setIsExporting(true);
+    try {
+      if (chartRef.current) {
+        const canvas = await html2canvas(chartRef.current, { scale: 3 });
+        const imageData = canvas.toDataURL("image/png", 1.0);
 
-      const imageData = canvas.toDataURL("image/png");
-      setChartImage(imageData);
+        // Initialize PDF in Portrait mode
+        const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+        // Add Title
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(16);
+        pdf.text("Visual Report of Water Sites", 105, 20, { align: "center" });
+
+        // Add Date Generated
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(12);
+        const date = new Date().toLocaleDateString();
+        pdf.text(`Date Generated: ${date}`, 105, 30, { align: "center" });
+
+        // Adjust image dimensions while maintaining aspect ratio
+        const imgWidth = 180;
+        const imgHeight = (canvas.height / canvas.width) * imgWidth;
+
+        // Add Image Below the Title & Date
+        pdf.addImage(imageData, "PNG", 15, 40, imgWidth, imgHeight);
+
+        // Save PDF
+        pdf.save(`Water_Sites_Report_${date}.pdf`);
+      }
+    } catch (error) {
+      console.error("Error exporting report:", error);
+    } finally {
+      setIsExporting(false);
     }
   };
+
 
 
   // Function to filter chart data based on selected filter
@@ -104,29 +135,44 @@ export default function MainChart() {
   if (!filteredData.length) return <p>No data available</p>
 
   return (
-    <Card className="flex flex-col h-full min-h-[200px]">
-      <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
-        <CardTitle>Water Sites Condition</CardTitle>
-        <button onClick={captureChart} className="border border-input text-sm font-medium px-4 py-2 rounded-md">
-          Capture Chart
-        </button>
-        {chartImage && (
-          <PDFDownloadLink document={<ChartReport chartImage={chartImage} />} fileName="ChartReport.pdf">
-            {({ loading }) => (
-              <button className="border border-input text-sm font-medium px-4 py-2 rounded-md">
-                {loading ? "Generating PDF..." : "Download PDF"}
-              </button>
-            )}
-          </PDFDownloadLink>
-        )}
-      </CardHeader>
+    <div>
+      <Card className="flex flex-col ">
+        <CardHeader className="flex-row justify-between items-center space-y-0 pb-0 border-b py-5">
+          <div className="grid gap-1">
+            <CardTitle>Water Sites Condition</CardTitle>
+            <CardDescription>Showing monitored sites water condition</CardDescription>
+          </div>
+          <div className="flex justify-between items-center space-x-6">
+            <div>
+              <Select value={activeFilter} onValueChange={setActiveFilter} >
+                <SelectTrigger className="ml-auto h-10 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
+                  <SelectValue placeholder="Select time range" />
+                </SelectTrigger>
+                <SelectContent align="end" className="rounded-xl">
+                  <SelectItem value="Last 7 days" className="rounded-lg">
+                    Last 7 days
+                  </SelectItem>
+                  <SelectItem value="Last 30 days" className="rounded-lg">
+                    Last 30 days
+                  </SelectItem>
+                  <SelectItem value="Last 3 months" className="rounded-lg">
+                    Last 3 months
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
 
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        {/* Ref wrapper to capture chart */}
-        <div ref={chartRef} className="relative">
-          <ChartContainer config={chartConfig} className="aspect-0 h-full w-full">
-            <AreaChart className="aspect-0 h-full w-full" data={filteredData}>
-              {/* Chart Definitions */}
+              <Button onClick={exportReport} variant="outline" className="h-10">
+                <ArrowDownToLine />
+                Export Report
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent ref={chartRef} className="px-2 pt-4 sm:px-6 sm:pt-6">
+          <ChartContainer config={chartConfig} className="aspect-0 h-full md:h-[250px] lg:h-[350px] w-full">
+            <AreaChart data={filteredData} className="aspect-0 lg:h-[300px] md:h-[250px] h-full w-full">
               <defs>
                 <linearGradient id="fillnonpotable" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="var(--color-nonpotable)" stopOpacity={0.8} />
@@ -158,8 +204,15 @@ export default function MainChart() {
               <ChartLegend content={<ChartLegendContent />} />
             </AreaChart>
           </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
-  )
+        </CardContent>
+      </Card>
+
+      <Dialog open={isExporting}>
+        <DialogContent className="flex flex-col items-center gap-4 p-6">
+          <Loader2 className="animate-spin text-blue-600" size={40} />
+          <p>Generating report, please wait...</p>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
