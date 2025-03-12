@@ -31,6 +31,7 @@ import {
 import useSiteStatus from "@/Hooks/useSiteStatus";// Custom hook to fetch data
 import { Separator } from "../ui/separator";
 import { CircleSmall, Dot } from "lucide-react";
+import { RadialChartSkeletonCard } from "./radialchartskeleton";
 
 const chartConfig = {
   potable: {
@@ -43,7 +44,7 @@ const chartConfig = {
   },
 }
 
-export default function RadialChart() {
+export default function RadialChart({ isCapturing }) {
   const { data: siteData, loading, error } = useSiteStatus() // Fetch site data
   const [activeMonth, setActiveMonth] = React.useState("")
 
@@ -62,34 +63,44 @@ export default function RadialChart() {
   const totalNonPotable = filteredData.reduce((acc, curr) => acc + curr.nonpotable, 0)
   const total = totalPotable + totalNonPotable
 
+  if (loading) return <div className=" w-[100%] h-full justify-center"><RadialChartSkeletonCard /></div>
+  if (error) return <p>Error: {error}</p>
+  if (!filteredData.length) return <p>No data available</p>
+
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="">
       <ChartStyle id="pie-interactive" config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0 border-b py-5">
         <div className="grid gap-1">
+
           <CardTitle>Potable vs Non Potable</CardTitle>
           <CardDescription>Shows monitored sites</CardDescription>
         </div>
-        <Select value={activeMonth} onValueChange={setActiveMonth}>
-          <SelectTrigger className="ml-auto h-10 w-[130px] rounded-lg pl-2.5" aria-label="Select a month">
-            <SelectValue placeholder="Select month" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {months.map((month) => (
-              <SelectItem key={month} value={month} className="rounded-lg">
-                <div className="flex items-center gap-2 text-xs">
-                  {month}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {isCapturing ? (
+          <h2 className="ml-auto pl-2.5 text-md ">{activeMonth || "Overall"}</h2>
+        ) : (
+          <Select value={activeMonth} onValueChange={setActiveMonth}>
+            <SelectTrigger className="ml-auto h-10 w-[130px] rounded-lg pl-2.5" aria-label="Overall">
+              <span>{activeMonth || "Overall"}</span>
+            </SelectTrigger>
+            <SelectContent align="end" className="rounded-xl">
+              {months.map((month) => (
+                <SelectItem key={month} value={month} className="rounded-lg">
+                  <div className="flex items-center gap-2 text-xs">
+                    {month}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           id="pie-interactive"
           config={chartConfig}
-          className="aspect-0 w-full h-full lg:h-[250px] md:h-[250px] "
+          className="aspect-0 w-full h-full md:h-[250px] lg:h-[270px] "
         >
           <PieChart>
             <ChartTooltip
@@ -128,7 +139,7 @@ export default function RadialChart() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Total
+                          Total Sites
                         </tspan>
                       </text>
                     )

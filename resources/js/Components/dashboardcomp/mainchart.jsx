@@ -51,7 +51,7 @@ const chartConfig = {
   },
 }
 
-export default function MainChart() {
+export default function MainChart({ isCapturing }) {
   const { data: chartData, loading, error } = useSiteStatus();
   const [activeFilter, setActiveFilter] = useState("Last 30 days");
   const chartRef = useRef(null);
@@ -142,37 +142,27 @@ export default function MainChart() {
             <CardTitle>Water Sites Condition</CardTitle>
             <CardDescription>Showing monitored sites water condition</CardDescription>
           </div>
-          <div className="flex justify-between items-center space-x-6">
-            <div>
-              <Select value={activeFilter} onValueChange={setActiveFilter} >
-                <SelectTrigger className="ml-auto h-10 w-[180px] rounded-lg pl-2.5" aria-label="Select a time range">
+          <div>
+            {isCapturing ? (
+              <h2 className="ml-auto pl-2.5 text-md ">{activeFilter || ""}</h2>
+            ) : (
+              <Select value={activeFilter} onValueChange={setActiveFilter}>
+                <SelectTrigger className="ml-auto h-10 rounded-lg ">
                   <SelectValue placeholder="Select time range" />
                 </SelectTrigger>
                 <SelectContent align="end" className="rounded-xl">
-                  <SelectItem value="Last 7 days" className="rounded-lg">
-                    Last 7 days
-                  </SelectItem>
-                  <SelectItem value="Last 30 days" className="rounded-lg">
-                    Last 30 days
-                  </SelectItem>
-                  <SelectItem value="Last 3 months" className="rounded-lg">
-                    Last 3 months
-                  </SelectItem>
+                  <SelectItem value="Last 7 days" className="rounded-lg">Last 7 days</SelectItem>
+                  <SelectItem value="Last 30 days" className="rounded-lg">Last 30 days</SelectItem>
+                  <SelectItem value="Last 3 months" className="rounded-lg">Last 3 months</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-
-              <Button onClick={exportReport} variant="outline" className="h-10">
-                <ArrowDownToLine />
-                Export Report
-              </Button>
-            </div>
+            )}
           </div>
+
         </CardHeader>
         <CardContent ref={chartRef} className="px-2 pt-4 sm:px-6 sm:pt-6">
           <ChartContainer config={chartConfig} className="aspect-0 h-full md:h-[250px] lg:h-[350px] w-full">
-            <AreaChart data={filteredData} className="aspect-0 lg:h-[300px] md:h-[250px] h-full w-full">
+            <AreaChart data={filteredData} className="aspect-0 h-full md:h-[250px] lg:h-[300px] w-full">
               <defs>
                 <linearGradient id="fillnonpotable" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="var(--color-nonpotable)" stopOpacity={0.8} />

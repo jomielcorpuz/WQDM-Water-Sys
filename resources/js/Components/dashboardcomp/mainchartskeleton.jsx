@@ -2,18 +2,19 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function MainchartSkeletonCard() {
   return (
-    <div className="w-full h-full sm:w-full sm:h-full flex justify-center items-center py-4 flex-col space-y-3">
-
-      <div className="flex justify-between px-4 flex-nowrap h-[15%] w-full sm:h-[20%] ">
-        <div className="space-y-2 px-4 flex-nowrap h-[20%%] w-full justify-start">
-
-          <Skeleton className="h-[30%] w-[30%]  rounded-xl" />
-          <Skeleton className="h-[30%] w-[50%]  rounded-xl" />
+    <div className="w-full h-full flex flex-col space-y-4 p-4">
+      {/* Header Skeleton */}
+      <div className="flex justify-between items-center w-full">
+        <div className="space-y-2 w-1/3">
+          <Skeleton className="h-6 w-3/4 rounded-xl" /> {/* Title */}
+          <Skeleton className="h-4 w-2/3 rounded-xl" /> {/* Description */}
         </div>
-        <Skeleton className="h-[50%] w-[20%]  rounded-xl" />
+        <Skeleton className="h-10 w-40 rounded-lg" /> {/* Dropdown */}
       </div>
-      <Skeleton className="h-[95%] w-[95%] sm:h-full rounded-xl" />
 
+      {/* Chart Skeleton (Matches ChartContainer height) */}
+      <Skeleton className="h-[250px] md:h-[250px] lg:h-[300px] w-full rounded-xl" />
     </div>
-  )
+  );
 }
+
