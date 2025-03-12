@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { WATER_STATUS_CLASS_MAP, WATER_STATUS_TEXT_MAP } from "@/constants";
 import { ACTIVE_STATUS_CLASS_MAP, ACTIVE_STATUS_TEXT_MAP } from "@/constants";
 import { Button } from "@/Components/ui/button";
-import { ArrowDownToLine, FilePenLine, Plus, Trash2, Upload } from "lucide-react";
+import { ArrowDownToLine, FilePenLine, Filter, MoreVertical, Plus, Trash2, Upload } from "lucide-react";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
@@ -18,8 +18,20 @@ import { Separator } from "@/Components/ui/separator";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import SitesReportPDF from "./SitesReportPDF";
 import { PDFViewer } from "@react-pdf/renderer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu";
 
-export default function Index({ auth, sites_data, sites_data_all, queryParams = null, success }) {
+export default function Index({ auth, sites_data, sites_data_all, sites_data_export, queryParams = null, success }) {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 640);
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (success) {
       toast.success(success.message, {
@@ -117,6 +129,7 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
       prevSelected.includes(id) ? prevSelected.filter((sid) => sid !== id) : [...prevSelected, id]
     );
   };
+  // Excell export -To be updated
   const handleExport = async () => {
     try {
       const response = await fetch(route('sitesdata.export'), {
@@ -148,23 +161,30 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
     }
   };
 
-  const ExportPDFButton = ({ sites_data_all }) => {
+  const ExportPDFButton = ({ sites_data_export, isDropdown = false }) => {
     return (
       <PDFDownloadLink
-        document={<SitesReportPDF sites={sites_data_all} />}
-        fileName={`water_quality_report_${new Date().toISOString().replace(/[:.]/g, "-")}.pdf`}
-
-        className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg transition-all hover:bg-blue-600 ease-in-out "
+        document={<SitesReportPDF sites={sites_data_export} />}
+        fileName={`water_quality_data_report_${new Date().toISOString().replace(/[:.]/g, "-")}.pdf`}
+        className={`text-sm font-medium flex items-center gap-2 shadow-sm transition-all ease-in-out duration-180
+          hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
+          disabled:pointer-events-none disabled:opacity-50
+          ${isDropdown
+            ? "w-full px-2 py-1 text-left bg-transparent hover:bg-gray-100 hover:text-black rounded-none border-none shadow-none"
+            : "border border-input bg-background px-4 py-2 rounded-md"
+          }`}
       >
         {({ loading }) => (
           <>
-            <ArrowDownToLine className="w-5 h-5" />
+            <ArrowDownToLine className="w-4 h-4 mr-2" />
             {loading ? "Loading PDF..." : "Export Report"}
           </>
         )}
       </PDFDownloadLink>
     );
   };
+
+
 
 
 
@@ -213,27 +233,43 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
                 }
                 onKeyPress={(e) => onKeyPress("name", e)}
               />
-              <Select
-                value={queryParams.status || "all"}
-                onValueChange={(value) => searchFieldChanged("status", value)}
-              >
-                <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5" aria-label="Select status">
-                  <SelectValue placeholder="Filter" />
-                </SelectTrigger>
-                <SelectContent align="end" className="rounded-xl">
-                  <SelectItem value="all" className="rounded-lg">All</SelectItem>
-                  <SelectItem value="potable" className="rounded-lg">Potable</SelectItem>
-                  <SelectItem value="non-potable" className="rounded-lg">Non-Potable</SelectItem>
-                </SelectContent>
-              </Select>
+              {!isSmallScreen ? (
+                <>
+                  <Select
+                    value={queryParams.status || "all"}
+                    onValueChange={(value) => searchFieldChanged("status", value)}
+                  >
+                    <SelectTrigger className="h-11 w-[150px] rounded-lg pl-2.5">
+                      <SelectValue placeholder="Filter" />
+                    </SelectTrigger>
+                    <SelectContent align="end">
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="potable">Potable</SelectItem>
+                      <SelectItem value="non-potable">Non-Potable</SelectItem>
+                    </SelectContent>
+                  </Select>
 
+                  <ExportPDFButton sites_data_export={sites_data_export.data} />
+                </>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <MoreVertical className="w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setIsFilterOpen(true)}>
+                      <Filter className="w-4 h-4 mr-2" /> Filter
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <ExportPDFButton sites_data_export={sites_data_export.data} isDropdown />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
-            <div>
-
-              <ExportPDFButton sites_data_all={sites_data_all.data} />
-
-            </div>
           </div>
 
           <div className="overflow-auto border rounded-xl">
@@ -388,6 +424,30 @@ export default function Index({ auth, sites_data, sites_data_all, queryParams = 
 
         </div>
 
+        {/* Filter Dialog */}
+        <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Filter Sites</DialogTitle>
+            </DialogHeader>
+            <Select
+              value={queryParams.status || "all"}
+              onValueChange={(value) => {
+                searchFieldChanged("status", value);
+                setIsFilterOpen(false);
+              }}
+            >
+              <SelectTrigger className="h-11 w-full rounded-lg pl-2.5">
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="potable">Potable</SelectItem>
+                <SelectItem value="non-potable">Non-Potable</SelectItem>
+              </SelectContent>
+            </Select>
+          </DialogContent>
+        </Dialog>
       </Card>
     </AuthenticatedLayout>
   );

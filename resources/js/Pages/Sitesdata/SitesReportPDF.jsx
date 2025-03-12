@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 });
 
 
-const ROWS_PER_PAGE = 20; // Adjust as needed
+const ROWS_PER_PAGE = 30; // Adjust as needed
 
 const chunkArray = (array, size) => {
   return Array.from({ length: Math.ceil(array.length / size) }, (_, index) =>
@@ -106,12 +106,17 @@ const SitesReportPDF = ({ sites = [] }) => {
         <Page size="A4" orientation="landscape" style={styles.page} key={pageIndex}>
           <View style={styles.section}>
             {/* Header and Page Indicator */}
-            <Text style={styles.title}>Water Quality Report</Text>
+            <Text style={styles.title}>Water Quality Data Report</Text>
 
-            {/* Total Sites & Date Container */}
-            <View style={styles.headerRow}>
+            {/* Total Sites */}
+            {pageIndex === 0 && (
               <Text style={styles.totalSites}>Total Sites: {sites.length}</Text>
-              <Text style={styles.reportDate}>{currentDate}</Text> {/* Date at top right */}
+            )}
+
+            {/* Date at top right */}
+            <View style={{ fontSize: 8, fontWeight: "bold", textAlign: "right", marginBottom: 5 }}>
+
+              <Text style={styles.reportDate}>{currentDate}</Text>
             </View>
 
             <Text style={{ fontSize: 8, textAlign: "right", marginBottom: 5 }}>
@@ -129,14 +134,14 @@ const SitesReportPDF = ({ sites = [] }) => {
                 <Text style={[styles.tableColHeader, { flex: 1 }]}>Turbidity (NTU)</Text>
                 <Text style={[styles.tableColHeader, { flex: 1 }]}>TDS (mg/L)</Text>
                 <Text style={[styles.tableColHeader, { flex: 1 }]}>Status</Text> {/* New Column */}
-                <Text style={[styles.tableColHeader, { flex: 2 }]}>Location</Text>
+                <Text style={[styles.tableColHeader, { flex: 3 }]}>Location</Text>
               </View>
 
               {/* Table Rows */}
               {chunk.map((site, index) => (
                 <View style={styles.tableRow} key={index}>
                   <Text style={[styles.nameCol, { flex: 2 }]} numberOfLines={1} ellipsizeMode="tail">
-                    {site.name.length > 25 ? site.name.substring(0, 25) + "..." : site.name}
+                    {site.name.length > 50 ? site.name.substring(0, 25) + "..." : site.name}
                   </Text>
                   <Text style={[styles.tableCol, { flex: 1 }]}>{site.status}</Text>
                   <Text style={[styles.tableCol, { flex: 1 }]}>{site.ph_level}</Text>
@@ -145,7 +150,7 @@ const SitesReportPDF = ({ sites = [] }) => {
                   <Text style={[styles.tableCol, { flex: 1 }]}>{site.total_dissolved_solids}</Text>
                   <Text style={[styles.tableCol, { flex: 1 }]}>{site.active_status}</Text>
 
-                  <Text style={[styles.addrcol, { flex: 2 }]} numberOfLines={1} ellipsizeMode="tail">
+                  <Text style={[styles.addrcol, { flex: 3 }]} numberOfLines={1} ellipsizeMode="tail">
                     {site.address.length > 50 ? site.address.substring(0, 30) + "..." : site.address}
                   </Text>
                 </View>
